@@ -3,13 +3,13 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { UserProvider } from "./context/UserContext";
 
-import Main from "./Main";
+import MainApp from "./MainApp";
 
 export default function App() {
   return (
     <NavigationContainer>
       <UserProvider>
-        <Main />
+        <MainApp />
       </UserProvider>
     </NavigationContainer>
   );

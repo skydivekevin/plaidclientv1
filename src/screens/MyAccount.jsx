@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const BottomNavbar = () => {
+const MyAccount = () => {
   return (
     <View>
-      <Text>BottomNavbar</Text>
+      <Text>MyAccount</Text>
     </View>
   )
 }
 
-export default BottomNavbar
+export default MyAccount
 
 const styles = StyleSheet.create({})

@@ -1,27 +1,32 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from "react";
 import StackNavigator from "./navigation/StackNavigator";
-import BottomNavbar from './src/components/BottomNavbar';
+import BottomNavbarMain from "./src/components/BottomNavbarMain"
+import MyAccount from './src/screens/MyAccount';
+
+
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import { useNavigation } from '@react-navigation/native';
 
 import UserContext from './context/UserContext';
 
-const Main = () => {
+export default function MainApp() {
 
   const { token } = useContext(UserContext)
-  console.log("navigation.state: ")
 
   const navigation = useNavigation();
+  const Tab = createMaterialBottomTabNavigator();
+
   return (
     <>
       <StackNavigator />
-      {token ? <BottomNavbar /> : null}
-      
+
+      {token ? <BottomNavbarMain /> : null}
     </>
   )
 }
 
-export default Main
+
 
 const styles = StyleSheet.create({})

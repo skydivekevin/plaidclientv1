@@ -25,7 +25,28 @@ export default function Login() {
     }
   }
 
+  // const evaluateAndRedirect = () => {
+  //   if (token) {
+  //     navigation.navigate("MainApp")
+  //   }
+  // }
+
   const handleLogin = () => {
+
+
+
+
+    
+
+    /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
+    const email = "Plaid.com";
+    const password = "Password";
+    /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
+
+
+
+
+
       axios({
       method: 'POST',
       url: `${baseUrl}/auth/login`,

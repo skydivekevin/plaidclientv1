@@ -8,6 +8,8 @@ import MyJobs from '../src/screens/MyJobs';
 import MyQuotes from '../src/screens/MyQuotes';
 import CreateAccount from '../src/screens/CreateAccount';
 
+import MainApp from '../MainApp';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +40,10 @@ function StackNavigator() {
           <Stack.Screen
             name='Create Account'
             component={CreateAccount}
+          />
+          <Stack.Screen
+            name='Main App'
+            component={MainApp}
           />
         </Stack.Group>
       </Stack.Navigator>
