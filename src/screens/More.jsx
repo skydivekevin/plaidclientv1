@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function MyAccount({navigation}) {
+const More = () => {
   return (
     <View>
-      <Text>MyAccount</Text>
+      <Text>More</Text>
     </View>
   )
 }
+
+export default More
 
 const styles = StyleSheet.create({})

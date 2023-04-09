@@ -114,7 +114,7 @@ export default function Login() {
 const styles = StyleSheet.create({
 
   appContainer: {
-    paddingTop: 30,
+    paddingTop: 90,
     paddingHorizontal: 16,
     flexDirection: 'column',
     justifyContent: 'center',

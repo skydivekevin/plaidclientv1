@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import React, { useContext } from "react";
 import StackNavigator from "./navigation/StackNavigator";
-import BottomNavbarMain from "./src/components/BottomNavbarMain"
-import MyAccount from './src/screens/MyAccount';
+
+
 
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -13,20 +13,36 @@ import UserContext from './context/UserContext';
 
 export default function MainApp() {
 
-  const { token } = useContext(UserContext)
-
-  const navigation = useNavigation();
-  const Tab = createMaterialBottomTabNavigator();
-
   return (
     <>
       <StackNavigator />
-
-      {token ? <BottomNavbarMain /> : null}
     </>
   )
 }
 
 
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  // container: {
+  //   height: "100%",
+  //   alignItems: "center"
+  // }
+
+})
+
+//There will be Dashboard, Jobs and Quotes, and More tabs in the bottom tab navigation
+//More will open up another menu with Account, 
+
+
+//Dashboard:
+    //Stack navigator: Reports, Misc Notes? {stain color for flooring, tile reference, paint colors by room etc.}
+
+//Jobs:
+    //Stack navigator: Upcoming Jobs, Past Jobs
+
+//Quotes:
+    //Existing quotes
+    //Request a quote
+
+//Account:
+    //Stack navigator: Reset Password

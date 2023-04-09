@@ -10,7 +10,7 @@ import CreateAccount from '../src/screens/CreateAccount';
 
 const Stack = createNativeStackNavigator();
 
-function StackNavigator() {
+function DashboardStackNavigator() {
   return (
       <Stack.Navigator
         screenOptions={{
@@ -21,7 +21,7 @@ function StackNavigator() {
         }}
       >
         <Stack.Group>
-          <Stack.Screen
+          {/* <Stack.Screen
             name='Plaid'
             component={Login}
             options={{
@@ -31,14 +31,11 @@ function StackNavigator() {
           <Stack.Screen
             name='Dashboard'
             component={Dashboard}
-            options={{
-              headerShown: false
-            }}
-          />
-           <Stack.Screen
-            name='Create Account'
-            component={CreateAccount}
-          />
+
+          /> */}
+
+
+
           {/* <Stack.Screen
             name='My Property'
             component={MyProperty}
@@ -46,15 +43,18 @@ function StackNavigator() {
           <Stack.Screen
             name='My Jobs'
             component={MyJobs}
-          />
-          <Stack.Screen
+          /> */}
+          {/* <Stack.Screen
             name='My Quotes'
             component={MyQuotes}
           />
-          */}
+          <Stack.Screen
+            name='Create Account'
+            component={CreateAccount}
+          /> */}
         </Stack.Group>
       </Stack.Navigator>
   )
 }
 
-export default StackNavigator
+export default DashboardStackNavigator

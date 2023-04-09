@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function MyAccount({navigation}) {
+const RequestQuote = () => {
   return (
     <View>
-      <Text>MyAccount</Text>
+      <Text>RequestQuote</Text>
     </View>
   )
 }
+
+export default RequestQuote
 
 const styles = StyleSheet.create({})
