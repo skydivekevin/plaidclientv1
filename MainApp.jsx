@@ -2,13 +2,6 @@ import { StyleSheet, Text } from 'react-native'
 import React, { useContext } from "react";
 import StackNavigator from "./navigation/StackNavigator";
 
-
-
-
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-
-import { useNavigation } from '@react-navigation/native';
-
 import UserContext from './context/UserContext';
 
 export default function MainApp() {
@@ -21,18 +14,7 @@ export default function MainApp() {
 }
 
 
-
-const styles = StyleSheet.create({
-  // container: {
-  //   height: "100%",
-  //   alignItems: "center"
-  // }
-
-})
-
-//There will be Dashboard, Jobs and Quotes, and More tabs in the bottom tab navigation
-//More will open up another menu with Account, 
-
+// Bottom Navigation: Dashboard, Jobs, Quotes, More
 
 //Dashboard:
     //Stack navigator: Reports, Misc Notes? {stain color for flooring, tile reference, paint colors by room etc.}
@@ -44,5 +26,8 @@ const styles = StyleSheet.create({
     //Existing quotes
     //Request a quote
 
+//More: Account, Notes? (stain color for floors, paint colors for walls, etc.), Learn more about Plaid
+
 //Account:
-    //Stack navigator: Reset Password
+    // Logout
+    // Profile (name, email, address, reset password, payment info?)

@@ -25,27 +25,12 @@ export default function Login() {
     }
   }
 
-  // const evaluateAndRedirect = () => {
-  //   if (token) {
-  //     navigation.navigate("MainApp")
-  //   }
-  // }
-
   const handleLogin = () => {
 
-
-
-
-    
-
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
-    const email = "Plaid.com";
+    const email = "Kevin.com";
     const password = "Password";
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
-
-
-
-
 
       axios({
       method: 'POST',
@@ -58,7 +43,12 @@ export default function Login() {
       setUser(user)
       setToken(token)
     })
-    .catch(setErrorLoggingIn(true))
+    .catch(function (error) {
+      if (error.response) {
+        console.log("error: ", error.response)
+        setErrorLoggingIn(true);
+      }
+    })
   }
 
   const goToCreateAccount = () => {
