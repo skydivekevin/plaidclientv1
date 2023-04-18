@@ -7,6 +7,8 @@ import MyProperty from '../src/screens/MyProperty';
 import MyJobs from '../src/screens/MyJobs';
 import MyQuotes from '../src/screens/MyQuotes';
 import CreateAccount from '../src/screens/CreateAccount';
+import AddProperty from '../src/screens/AddProperty';
+import LearnMore from '../src/screens/LearnMore';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,19 +41,25 @@ function StackNavigator() {
             name='Create Account'
             component={CreateAccount}
           />
+          <Stack.Screen
+            name='Add Property'
+            component={AddProperty}
+            options={{
+              headerBackVisible: true
+            }}
+          />
+          <Stack.Screen
+            name='Learn More'
+            component={LearnMore}
+            options={{
+              headerBackVisible: true
+            }}
+          />
           {/* <Stack.Screen
-            name='My Property'
-            component={MyProperty}
-          />
-          <Stack.Screen
-            name='My Jobs'
-            component={MyJobs}
-          />
-          <Stack.Screen
             name='My Quotes'
             component={MyQuotes}
-          />
-          */}
+          /> */}
+         
         </Stack.Group>
       </Stack.Navigator>
   )
