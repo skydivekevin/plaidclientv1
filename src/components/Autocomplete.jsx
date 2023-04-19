@@ -3,16 +3,17 @@ import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 // import PropertyContext from '../../context/PropertyContext';
+import ApiContext, { places } from '../../context/ApiContext';
 
 const url="http://localhost:8080/api/properties"
 
 
 export default function Autocomplete() {
-  const places2 = "AIzaSyCuwsx91BV0hwRswT2UoqbUI_ctTbgkpqM"
 
   const navigation = useNavigation()
 
   // const { currentProperty, setCurrentProperty } = useContext(PropertyContext)
+  const { places, setPlaces } = useContext(ApiContext)
 
   const [predictions, setPredictions] = useState([])
   const [isShowingPredictions, setIsShowingPredictions] = useState(true)
@@ -21,9 +22,30 @@ export default function Autocomplete() {
   const [goToAddressButton, setShowGoToAddressButton] = useState(false)
   const [location, setLocation] = useState()
 
+  const baseUrl = 'http://localhost:8080/api';
+
   useEffect(() => {
     setPlaceDescription();
   })
+
+  useEffect(() => {
+    if (!places) {
+      getPlaces()
+    }
+  })
+
+  function getPlaces() {
+  
+    axios({
+      method: 'GET',
+      url: `${baseUrl}/utils/fetchGoogle`,
+    })
+    .then(res => {
+      const places = res.data.places
+      setPlaces(places)
+    })
+    .catch(err => console.log("err: ", err))
+  }
 
   searchLocation = async (locationInput) => {
     if(locationInput.length < 5) {
@@ -31,7 +53,7 @@ export default function Autocomplete() {
     }
     axios({
       method: 'GET',
-      url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${places2}&input=${locationInput}`,
+      url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${places}&input=${locationInput}`,
     })
     .then((res) => {
       setPredictions(res.data.predictions)
@@ -61,14 +83,15 @@ export default function Autocomplete() {
       })
       .then(res => {
         const currentProperty = res.data
-        // setCurrentProperty(currentProperty)
       })
       .catch(err => console.log("error: ", err))
     }
   }
 
-  function goToAddress() {
-    navigation.navigate("Address")
+  function claimProperty() {
+    //axios POST to person, claiming property
+
+    //if successful, navigation.navigate("Dashboard")
   }
 
   function buildAddress(location) {
@@ -120,8 +143,8 @@ export default function Autocomplete() {
 
     </View>
     <Button 
-      title="Go to Address"
-      onPress={goToAddress}
+      title="Claim Property"
+      onPress={claimProperty}
       style={styles.button}
     />
   </SafeAreaView>

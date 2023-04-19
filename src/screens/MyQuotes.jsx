@@ -8,6 +8,7 @@ import axios from 'axios';
 import QuotesContext from '../../context/QuotesContext';
 
 import UserContext from '../../context/UserContext';
+import ApiContext from '../../context/ApiContext';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -17,12 +18,14 @@ const MyQuotes = () => {
 
   const { user } = useContext(UserContext)
   const { quotes, setQuotes } = useContext(QuotesContext);
+  const { setPlaces } = useContext(ApiContext)
 
   const [ noQuotes, setNoQuotes ] = useState(false);
   
 
   useEffect(() => {
     getQuotes()
+    getKeys()
   }, [])
 
   function getQuotes() {
@@ -43,9 +46,23 @@ const MyQuotes = () => {
         }
       })
     }
-    if (!user.currentProperties.length >=1 ) {
+    if (!user.currentProperties.length >= 1 ) {
       setNoQuotes(true)
     }
+  }
+
+  function getKeys() {
+    console.log("get keys")
+  
+    axios({
+      method: 'GET',
+      url: `${baseUrl}/utils/fetchGoogle`,
+    })
+    .then(res => {
+      const places = res.data.places
+      setPlaces(places)
+    })
+    .catch(err => console.log("err: ", err))
   }
 
   function noProperties() {

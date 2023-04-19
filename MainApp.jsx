@@ -1,8 +1,5 @@
-import { StyleSheet, Text } from 'react-native'
-import React, { useContext } from "react";
+import React from "react";
 import StackNavigator from "./navigation/StackNavigator";
-
-import UserContext from './context/UserContext';
 
 export default function MainApp() {
 
