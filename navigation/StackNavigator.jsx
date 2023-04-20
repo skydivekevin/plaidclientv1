@@ -7,7 +7,7 @@ import MyProperty from '../src/screens/MyProperty';
 import MyJobs from '../src/screens/MyJobs';
 import MyQuotes from '../src/screens/MyQuotes';
 import CreateAccount from '../src/screens/CreateAccount';
-import AddProperty from '../src/screens/AddProperty';
+import ClaimProperty from '../src/screens/ClaimProperty';
 import LearnMore from '../src/screens/LearnMore';
 
 const Stack = createNativeStackNavigator();
@@ -42,8 +42,8 @@ function StackNavigator() {
             component={CreateAccount}
           />
           <Stack.Screen
-            name='Add Property'
-            component={AddProperty}
+            name='Claim Property'
+            component={ClaimProperty}
             options={{
               headerBackVisible: true
             }}

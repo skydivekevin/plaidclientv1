@@ -6,6 +6,7 @@ import { QuotesProvider } from "./context/QuotesContext";
 import { ApiProvider } from "./context/ApiContext";
 
 import MainApp from "./MainApp";
+import { PropertyProvider } from "./context/PropertyContext";
 
 export default function App() {
   return (
@@ -13,7 +14,9 @@ export default function App() {
       <NavigationContainer>
         <UserProvider>
           <QuotesProvider>
-            <MainApp />
+            <PropertyProvider>
+              <MainApp />
+            </PropertyProvider>
           </QuotesProvider>
         </UserProvider>
       </NavigationContainer>

@@ -70,9 +70,9 @@ const MyQuotes = () => {
       <View>
         <Text>You don't have any associated properties to manage, add one by clicking below or learn more about Plaid.</Text>
         <Button 
-          title="Add Property"
+          title="Add property"
           onPress={() => {
-            navigation.navigate("Add Property")
+            navigation.navigate("Claim Property")
           }}
         />
         <Button 
