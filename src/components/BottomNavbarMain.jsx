@@ -11,7 +11,7 @@ export default function BottomNavbarMain() {
 
     return (
       <Tab.Navigator>
-        <Tab.Screen name="My Quotes" component={MyQuotes} />
+        <Tab.Screen name="My Quotes" component={MyQuotes}/>
         <Tab.Screen name="My Jobs" component={MyJobs} />
         <Tab.Screen name="Request Quote" component={RequestQuote} />
         <Tab.Screen name="More" component={More} />

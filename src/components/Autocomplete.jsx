@@ -49,7 +49,8 @@ export default function Autocomplete() {
   }
 
   searchLocation = async (locationInput) => {
-    if(locationInput.length < 5) {
+    // Trying to optomize calls to google; currently it only starts reaching out if the user types in at least 5 characters
+    if (locationInput.length < 5) {
       return
     }
     axios({
@@ -120,7 +121,8 @@ export default function Autocomplete() {
 
   function clearInput() {
     console.log("clear input")
-    setPlaceDescription()
+    setIsShowingPredictions(false)
+    // setPlaceDescription()
   }
 
   return (
@@ -136,7 +138,8 @@ export default function Autocomplete() {
         clearButtonMode="while-editing"
         />
 {
-  (isShowingPredictions && predictions) && (
+  // (isShowingPredictions && predictions) && ( this works; just commented out for testing
+  isShowingPredictions && (
       <FlatList
         data={predictions}
         renderItem={({item}) => {
@@ -177,7 +180,6 @@ export default function Autocomplete() {
 
 const styles = StyleSheet.create({
   autocompleteContainer: {
-    zIndex: 1,
   },
   searchResultsContainer: {
     width: 340,
@@ -206,8 +208,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 20,
-    flex: 1,
-    alignItems: 'center',
   },
   button: {
     position: 'absolute',

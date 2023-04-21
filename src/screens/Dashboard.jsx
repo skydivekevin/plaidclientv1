@@ -15,6 +15,6 @@ export default Dashboard
 
 const styles = StyleSheet.create({
   dashboard: {
-    height: "100%"
+    height: "100%",
   }
 })

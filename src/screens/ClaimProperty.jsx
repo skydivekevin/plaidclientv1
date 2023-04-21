@@ -38,17 +38,16 @@ const ClaimProperty = () => {
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.autocomplete}>
-      <Autocomplete />
-      </View>
-      <View style={styles.claim}>
+        <View style={styles.autocomplete}>
+          <Autocomplete />
+        </View>
+        <View style={styles.verificationTextBox}>
       <TextInput
         placeholder="Enter verification code"
         placeholderTextColor="#000"
         autoCapitalize='none'
-        style={styles.searchBox}
+        style={styles.verificationCode}
         onChangeText={(text) => setVerificationCode(text)}
-        // clearButton={clearInput}
         clearButtonMode="while-editing"
         />
         </View>
@@ -58,62 +57,35 @@ const ClaimProperty = () => {
       onPress={claimProperty}
       style={styles.button}
     />
+    <Button 
+      title="Request Verification Code"
+      onPress={claimProperty}
+      style={styles.button}
+    />
     </View>
-    </View>
+  </View>
   )
 }
 
 export default ClaimProperty
-////////////////////////////// This css is garbage; just here for a representation. It's not dynamic, all fixed positions...not sure how it'll work out  //////////////////////////////
 
 const styles = StyleSheet.create({
   appContainer: {
-    paddingTop: 30,
     paddingHorizontal: 16,
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  autocomplete: {
-
-  },
-  claim: {
-    position: 'absolute',
-    top: 100
-  }, 
-  buttonContainer: {
-    position: 'absolute',
-    top: 175
-  },
-  container: {
-    paddingTop: 20,
-    flex: 1,
-    alignItems: 'center',
-  },
-  // button: {
-  //   position: 'absolute',
-  //   bottom: 50
-  // },
-  inputContainer: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
-    width: '100%'
+    zIndex: 1
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    width: '80%',
-    marginRight: 8,
-    padding: 8
+  inputContainer: {
+    marginTop: 25,
+
   },
-  screenTitle: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    fontSize: 50
+  autocomplete: {
+    marginTop: 25
   },
-  searchBox: {
+  verificationCode: {
+    marginTop: 25,
     width: 340,
     height: 50,
     fontSize: 18,
@@ -124,4 +96,11 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     paddingLeft: 15,
   },
+  verificationTextBox: {
+    zIndex: -1
+  },
+  buttonContainer: {
+    marginTop: 25,
+    zIndex: -1
+  }
 })
