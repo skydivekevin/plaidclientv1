@@ -13,12 +13,12 @@ const ClaimProperty = () => {
 
   const navigation = useNavigation();
 
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
   const { property } = useContext(PropertyContext)
 
   const [verificationCode, setVerificationCode] = useState()
 
-  console.log("property: ", property)
+  // console.log("property: ", property)
   console.log("verification: ", verificationCode)
 
 
@@ -33,7 +33,7 @@ const ClaimProperty = () => {
       }
     })
     .then(res => {
-      console.log("res: ", res)
+      setUser(res.data)
     })
     .catch(function (error) {
       if (error.response) {

@@ -13,7 +13,6 @@ import ApiContext from '../../context/ApiContext';
 const baseUrl = 'http://localhost:8080/api';
 
 const MyQuotes = () => {
-
   const navigation = useNavigation();
 
   const { user } = useContext(UserContext)
@@ -21,39 +20,69 @@ const MyQuotes = () => {
   const { setPlaces } = useContext(ApiContext)
 
   const [ noQuotes, setNoQuotes ] = useState(false);
+  const [noAssociatedProperties, setNoAssociatedProperties] = useState(true);
+  const [provisional, setProvisional] = useState();
+  const [hasProvisionalCodes, setHasProvisionalCodes] = useState(false);
+  const [provisionalCodes, setProvisionalCodes] = useState([]);
   
-
   useEffect(() => {
-    getQuotes()
-    getKeys()
-  }, [])
+    if (user.accountStatus === "provisional") {
+      setProvisional(true)
+      if (user.provisionalCodes.length > 0) {
+        console.log("asdf")
+        getProvisionalQuotes()
+      }
+    }
+    if (user.accountStatus != "provisional") {
+      setProvisional(false)
+      getQuotes()
+      getKeys()
+      if (user.currentProperties.length > 0) {
+        console.log("setNoAssociatedProperties")
+        setNoAssociatedProperties(false)
+      }
+    }
+  }, [user])
 
+  function getProvisionalQuotes() {
+    console.log("provisional")
+    axios({
+      method: 'GET',
+      url: `${baseUrl}/quotes/getProvisionalQuotes`,
+    })
+    .then(res => {
+      console.log("provisionalCodes: ", res.data)
+    })
+    .catch(function (error) {
+      console.log("error: ", error)
+    })
+
+  }
+  
   function getQuotes() {
-
     if (user.currentProperties.length >= 1) {
       axios({
         method: 'GET',
         url: `${baseUrl}/quotes/getAllQuotesAtAddress`,
       })
       .then(res => {
-        console.log("quotes: ", res)
-        setQuotes(res)
+        setQuotes(res.data)
       })
       .catch(function (error) {
         if (error.response) {
-          console.log("error: ", error.response)
-          setErrorLoggingIn(true);
+          console.log("error: ", error.response.data.message)
+          if (error.response.data.message === "unverified account") {
+            console.log("unverified account")
+          }
         }
       })
     }
     if (!user.currentProperties.length >= 1 ) {
-      setNoQuotes(true)
+      setNoAssociatedProperties(true)
     }
   }
 
   function getKeys() {
-    console.log("get keys")
-  
     axios({
       method: 'GET',
       url: `${baseUrl}/utils/fetchGoogle`,
@@ -85,13 +114,26 @@ const MyQuotes = () => {
     )
   }
 
+  function renderProvisional() {
+    if (user.provisionalCodes.length)
+    return (
+      <Text>Verify your address to see all of your quotes</Text>
+    )
+  }
+
   function renderQuotes() {
-    //if only one property, show quotes. If multiple properties, 
+    //if only one property, show quotes. If multiple properties, show
+    //check for provisional codes or if account is full then good to go
+    return (
+      <Text>Show Properties Here</Text>
+    )
   }
 
   return (
     <View>
-      {noQuotes ? noProperties() : <Text>Show Properti</Text>}
+      {provisional ? 
+      renderProvisional() 
+      : noAssociatedProperties ? noProperties() : renderQuotes()}
     </View>
   )
 }
