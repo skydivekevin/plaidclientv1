@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -10,26 +10,28 @@ import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
 import ApiContext from '../../context/ApiContext';
 
+import Quote from '../components/Quote'
+
 const baseUrl = 'http://localhost:8080/api';
 
 const MyQuotes = () => {
   const navigation = useNavigation();
 
   const { user } = useContext(UserContext)
-  const { quotes, setQuotes } = useContext(QuotesContext);
+  const { quotes, setQuotes, provisionalQuotesContext, setProvisionalQuotesContext } = useContext(QuotesContext);
   const { setPlaces } = useContext(ApiContext)
 
-  const [ noQuotes, setNoQuotes ] = useState(false);
-  const [noAssociatedProperties, setNoAssociatedProperties] = useState(true);
+  const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   const [provisional, setProvisional] = useState();
   const [hasProvisionalCodes, setHasProvisionalCodes] = useState(false);
   const [provisionalCodes, setProvisionalCodes] = useState([]);
+  const [provisionalQuotes, setProvisionalQuotes] = useState([]);
+  const [moreQuotes, setMoreQuotes] = useState();
   
   useEffect(() => {
     if (user.accountStatus === "provisional") {
       setProvisional(true)
       if (user.provisionalCodes.length > 0) {
-        console.log("asdf")
         getProvisionalQuotes()
       }
     }
@@ -38,29 +40,28 @@ const MyQuotes = () => {
       getQuotes()
       getKeys()
       if (user.currentProperties.length > 0) {
-        console.log("setNoAssociatedProperties")
         setNoAssociatedProperties(false)
       }
     }
   }, [user])
 
   function getProvisionalQuotes() {
-    console.log("provisional")
     axios({
       method: 'GET',
       url: `${baseUrl}/quotes/getProvisionalQuotes`,
     })
     .then(res => {
-      console.log("provisionalCodes: ", res.data)
+      res.data.moreQuotes ? setMoreQuotes(true) : false
+      setQuotes(res.data.provisionalQuotes)
     })
     .catch(function (error) {
-      console.log("error: ", error)
+      console.log("error: ", error.message)
     })
-
   }
   
   function getQuotes() {
     if (user.currentProperties.length >= 1) {
+      setNoAssociatedProperties(false)
       axios({
         method: 'GET',
         url: `${baseUrl}/quotes/getAllQuotesAtAddress`,
@@ -70,14 +71,13 @@ const MyQuotes = () => {
       })
       .catch(function (error) {
         if (error.response) {
-          console.log("error: ", error.response.data.message)
           if (error.response.data.message === "unverified account") {
             console.log("unverified account")
           }
         }
       })
     }
-    if (!user.currentProperties.length >= 1 ) {
+    if (user.currentProperties.length === 0 ) {
       setNoAssociatedProperties(true)
     }
   }
@@ -115,29 +115,64 @@ const MyQuotes = () => {
   }
 
   function renderProvisional() {
-    if (user.provisionalCodes.length)
+    console.log("moreQuotes: ", moreQuotes)
+    
     return (
       <Text>Verify your address to see all of your quotes</Text>
     )
   }
 
   function renderQuotes() {
-    //if only one property, show quotes. If multiple properties, show
-    //check for provisional codes or if account is full then good to go
+    // if (provisional) {renderProvisional()}
     return (
-      <Text>Show Properties Here</Text>
+      <>
+      <Text>Quotes available for immediate booking</Text>
+      {console.log("quotes: ", quotes)}
+      {quotes.map(quote => {
+        return (
+          <Quote quote={quote} key={quote._id}/>
+        )
+      })}
+      </>
+    )
+  }
+
+  function renderMoreQuotesNotification() {
+    return (
+      <View style={styles.renderMoreQuotesNotification}>
+        <Text>
+          There are more quotes available on your property. Verify property to see them!
+        </Text>
+          <Button 
+          title="Verify Property"
+          onPress={() => {
+            navigation.navigate("Claim Property")
+          }}
+        />
+      </View>
     )
   }
 
   return (
-    <View>
-      {provisional ? 
-      renderProvisional() 
-      : noAssociatedProperties ? noProperties() : renderQuotes()}
+    <View style={styles.container}>
+      <ScrollView>
+      {moreQuotes ? renderMoreQuotesNotification() : null}
+      {noAssociatedProperties ? noProperties() : renderQuotes()}
+      </ScrollView>
     </View>
   )
 }
 
 export default MyQuotes
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    alignItems: 'center',
+
+  },
+  renderMoreQuotesNotification: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+})
