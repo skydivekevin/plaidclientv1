@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 import QuotesContext from '../../context/QuotesContext';
-
 import UserContext from '../../context/UserContext';
 import ApiContext from '../../context/ApiContext';
 
@@ -17,16 +16,15 @@ const baseUrl = 'http://localhost:8080/api';
 const MyQuotes = () => {
   const navigation = useNavigation();
 
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
   const { quotes, setQuotes, provisionalQuotesContext, setProvisionalQuotesContext } = useContext(QuotesContext);
-  const { setPlaces } = useContext(ApiContext)
+  const { setPlaces } = useContext(ApiContext);
+  // const { cart, setCart, updateCart } = useContext(CartContext);
 
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   const [provisional, setProvisional] = useState();
-  const [hasProvisionalCodes, setHasProvisionalCodes] = useState(false);
-  const [provisionalCodes, setProvisionalCodes] = useState([]);
-  const [provisionalQuotes, setProvisionalQuotes] = useState([]);
   const [moreQuotes, setMoreQuotes] = useState();
+  const [cart, setCart] = useState([]);
   
   useEffect(() => {
     if (user.accountStatus === "provisional") {
@@ -115,25 +113,38 @@ const MyQuotes = () => {
   }
 
   function renderProvisional() {
-    console.log("moreQuotes: ", moreQuotes)
-    
-    return (
-      <Text>Verify your address to see all of your quotes</Text>
-    )
+    if (quotes) {
+      return renderQuotes()
+    }
+  }
+
+  function handleSelected(quote, selected) {
+    if (selected) {
+      setCart([...cart, quote])
+    }
+    if (!selected) {
+      cart.map((item) => {
+        if (item._id === quote._id) {
+          const newCart = cart.filter(function (letter) {
+            return letter !== item
+          })
+          setCart(newCart)
+        }
+      })
+    }
   }
 
   function renderQuotes() {
-    // if (provisional) {renderProvisional()}
     return (
-      <>
+      <View style={styles.renderQuotesContainer}>
       <Text>Quotes available for immediate booking</Text>
-      {console.log("quotes: ", quotes)}
+      <Text>Click on a quote to add it to your cart</Text>
       {quotes.map(quote => {
         return (
-          <Quote quote={quote} key={quote._id}/>
+            <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
         )
       })}
-      </>
+      </View>
     )
   }
 
@@ -141,7 +152,7 @@ const MyQuotes = () => {
     return (
       <View style={styles.renderMoreQuotesNotification}>
         <Text>
-          There are more quotes available on your property. Verify property to see them!
+          There are more quotes available on your property. Verify property to see them and add more!
         </Text>
           <Button 
           title="Verify Property"
@@ -153,11 +164,17 @@ const MyQuotes = () => {
     )
   }
 
+  function renderFullAccess() {
+    return renderQuotes()
+  }
+
   return (
     <View style={styles.container}>
+      <Text>{cart.length}</Text>
       <ScrollView>
-      {moreQuotes ? renderMoreQuotesNotification() : null}
-      {noAssociatedProperties ? noProperties() : renderQuotes()}
+      {provisional ? renderProvisional() : renderFullAccess()}
+      {/* {moreQuotes ? renderMoreQuotesNotification() : null}
+      {noAssociatedProperties ? noProperties() : renderQuotes()} */}
       </ScrollView>
     </View>
   )
@@ -169,7 +186,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
+    paddingTop: 10
 
+  },
+  renderQuotesContainer: {
+    alignItems: 'center'
   },
   renderMoreQuotesNotification: {
     alignItems: 'center',

@@ -129,7 +129,7 @@ export default function Autocomplete() {
   <SafeAreaView style={styles.container}>
     <View style={styles.autocompleteContainer}>
       <TextInput
-        placeholder="Search For Address"
+        placeholder="Enter Address"
         placeholderTextColor="#000"
         style={styles.searchBox}
         onChangeText={(locationInput) => searchLocation(locationInput)}
