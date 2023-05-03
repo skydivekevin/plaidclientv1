@@ -16,29 +16,39 @@ const ClaimProperty = () => {
   const { user, setUser } = useContext(UserContext)
   const { property } = useContext(PropertyContext)
 
-  const [verificationCode, setVerificationCode] = useState()
+  const [verificationCode, setVerificationCode] = useState("")
+
 
   // console.log("property: ", property)
-  console.log("verification: ", verificationCode)
+  // console.log("verification: ", verificationCode)
 
 
   function claimProperty() {
     //axios POST to person, claiming property
-    axios({
-      method: 'POST',
-      url: `${baseUrl}/properties/claim`,
-      data: {
+    let data;
+    if (verificationCode) {
+      data = {
         property: property,
         verificationCode: verificationCode
       }
+    }
+    if (!verificationCode) {
+      data = {
+        property: property
+      }
+    }
+    axios({
+      method: 'POST',
+      url: `${baseUrl}/properties/claim`,
+      data
     })
     .then(res => {
       setUser(res.data)
+      console.log("res.data: ", res.data)
     })
     .catch(function (error) {
       if (error.response) {
         console.log("error: ", error.response)
-        setErrorLoggingIn(true);
       }
     })
 
