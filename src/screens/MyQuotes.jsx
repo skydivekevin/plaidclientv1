@@ -17,15 +17,15 @@ const MyQuotes = () => {
   const navigation = useNavigation();
 
   const { user } = useContext(UserContext);
-  const { quotes, setQuotes, provisionalQuotesContext, setProvisionalQuotesContext } = useContext(QuotesContext);
+  // const { quotes, setQuotes, provisionalQuotesContext, setProvisionalQuotesContext } = useContext(QuotesContext);
   const { setPlaces } = useContext(ApiContext);
 
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
-  // const [provisional, setProvisional] = useState();
-  const [moreQuotes, setMoreQuotes] = useState();
   const [cart, setCart] = useState([]);
   const [groupedQuotes, setGroupedQuotes] = useState([]);
   const [allQuotesCount, setAllQuotesCount] = useState();
+  const [verifiedQuotes, setVerifiedQuotes] = useState([]);
+  const [unverifiedQuotes, setUnverifiedQuotes] = useState([]);
   
   useEffect(() => {
     console.log("user: ", user)
@@ -40,52 +40,38 @@ const MyQuotes = () => {
 
   useEffect(() => {
     groupQuotesByVendor()
-  }, [quotes])
+  }, [verifiedQuotes, unverifiedQuotes])
 
-  // function getProvisionalQuotes() {
-  //   axios({
-  //     method: 'GET',
-  //     url: `${baseUrl}/quotes/getProvisionalQuotes`,
-  //   })
-  //   .then(res => {
-  //     res.data.moreQuotes ? setMoreQuotes(true) : setMoreQuotes(false)
-  //     setQuotes(res.data.provisionalQuotes)
-  //   })
-  //   .catch(function (error) {
-  //     console.log("error: ", error.message)
-  //   })
-  // }
   function handleQuoteResponse(res) {
     console.log("res: ", res)
-    setAllQuotesCount(res.allQuotesCount)
-    setMoreQuotes(res.moreQuotes)
-    setQuotes(res.provisionalQuotes)
-
+    setUnverifiedQuotes(res.data.unverified)
+    setVerifiedQuotes(res.data.verifiedQuotes)
   }
   
   function getQuotes() {
-    console.log("getquote")
-    // if (user.currentProperties.length >= 1) {
-    //   setNoAssociatedProperties(false)
-    //   axios({
-    //     method: 'GET',
-    //     url: `${baseUrl}/quotes/getAllQuotesAtAddress`,
-    //   })
-    //   .then(res => {
-    //     handleQuoteResponse(res.data)
-    //     // setQuotes(res.data)
-    //   })
-    //   .catch(function (error) {
-    //     if (error.response) {
-    //       if (error.response.data.message === "unverified account") {
-    //         console.log("unverified account")
-    //       }
-    //     }
-    //   })
-    // }
-    // if (user.currentProperties.length === 0 ) {
-    //   setNoAssociatedProperties(true)
-    // }
+
+    if (user.currentProperties.length >= 1) {
+      setNoAssociatedProperties(false)
+      axios({
+        method: 'GET',
+        url: `${baseUrl}/quotes/getAllUserQuotes`,
+      })
+      .then(res => {
+        // console.log("res: ", res.data)
+        handleQuoteResponse(res)
+        // setQuotes(res.data)
+      })
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.data.message === "unverified account") {
+            console.log("unverified account")
+          }
+        }
+      })
+    }
+    if (user.currentProperties.length === 0 ) {
+      setNoAssociatedProperties(true)
+    }
   }
 
   function getKeys() {
@@ -122,16 +108,6 @@ const MyQuotes = () => {
     )
   }
 
-  function renderProvisional() {
-    if (quotes?.length === 0) {
-
-    }
-
-    if (quotes?.length > 0) {
-      return renderQuotes()
-    }
-  }
-
   function handleSelected(quote, selected) {
     if (selected) {
       setCart([...cart, quote])
@@ -156,7 +132,7 @@ const MyQuotes = () => {
     let categories = [];
     let vendors = [];
     let groupedQuotes = [];
-    quotes?.map(quote => {
+    verifiedQuotes?.map(quote => {
       if (quote.vendorCategories.length === 0) {
         return
       }
@@ -197,7 +173,7 @@ const MyQuotes = () => {
       <View style={styles.renderQuotesContainer}>
       <Text>Quotes available for immediate booking</Text>
       <Text>Click on a quote to add it to your cart</Text>
-      {quotes.map(quote => {
+      {verifiedQuotes.map(quote => {
         return (
             <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
         )
@@ -231,11 +207,7 @@ const MyQuotes = () => {
       <Text>cart: {cart.length}</Text>
       {noAssociatedProperties ? noProperties(): null}
       <ScrollView>
-      {/* {provisional ? renderProvisional() : renderFullAccess()} */}
-
-
-      {/* {moreQuotes ? renderMoreQuotesNotification() : null}
-      {noAssociatedProperties ? noProperties() : renderQuotes()} */}
+        {verifiedQuotes ? renderQuotes() : null}
       </ScrollView>
     </View>
   )
