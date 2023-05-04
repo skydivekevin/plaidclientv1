@@ -25,7 +25,7 @@ const MyQuotes = () => {
   const [groupedQuotes, setGroupedQuotes] = useState([]);
   const [allQuotesCount, setAllQuotesCount] = useState();
   const [verifiedQuotes, setVerifiedQuotes] = useState([]);
-  const [unverifiedQuotes, setUnverifiedQuotes] = useState([]);
+  const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   
   useEffect(() => {
     console.log("user: ", user)
@@ -40,13 +40,7 @@ const MyQuotes = () => {
 
   useEffect(() => {
     groupQuotesByVendor()
-  }, [verifiedQuotes, unverifiedQuotes])
-
-  function handleQuoteResponse(res) {
-    console.log("res: ", res)
-    setUnverifiedQuotes(res.data.unverified)
-    setVerifiedQuotes(res.data.verifiedQuotes)
-  }
+  }, [verifiedQuotes, unverifiedQuotesCount])
   
   function getQuotes() {
 
@@ -57,9 +51,9 @@ const MyQuotes = () => {
         url: `${baseUrl}/quotes/getAllUserQuotes`,
       })
       .then(res => {
-        // console.log("res: ", res.data)
-        handleQuoteResponse(res)
-        // setQuotes(res.data)
+        console.log("res: ", res.data)
+        setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
+        setVerifiedQuotes(res.data.verifiedQuotes)
       })
       .catch(function (error) {
         if (error.response) {
@@ -171,13 +165,14 @@ const MyQuotes = () => {
   function renderQuotes() {
     return (
       <View style={styles.renderQuotesContainer}>
-      <Text>Quotes available for immediate booking</Text>
       <Text>Click on a quote to add it to your cart</Text>
+      <ScrollView>
       {verifiedQuotes.map(quote => {
         return (
             <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
         )
       })}
+      </ScrollView>
       </View>
     )
   }
@@ -206,9 +201,8 @@ const MyQuotes = () => {
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
       {noAssociatedProperties ? noProperties(): null}
-      <ScrollView>
-        {verifiedQuotes ? renderQuotes() : null}
-      </ScrollView>
+      {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
+      {verifiedQuotes ? renderQuotes() : null}
     </View>
   )
 }
