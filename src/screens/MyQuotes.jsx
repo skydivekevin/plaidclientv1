@@ -31,7 +31,6 @@ const MyQuotes = () => {
     console.log("user: ", user)
     getKeys()
     if (user.currentProperties?.length === 0) {
-      console.log("no properties")
       setNoAssociatedProperties(true)
       return
     }
@@ -43,8 +42,8 @@ const MyQuotes = () => {
   }, [verifiedQuotes, unverifiedQuotesCount])
   
   function getQuotes() {
-
-    if (user.currentProperties.length >= 1) {
+    console.log("user.currentProperties: ", user)
+    if (user.currentProperties?.length >= 1) {
       setNoAssociatedProperties(false)
       axios({
         method: 'GET',
@@ -63,7 +62,7 @@ const MyQuotes = () => {
         }
       })
     }
-    if (user.currentProperties.length === 0 ) {
+    if (user.currentProperties?.length === 0 ) {
       setNoAssociatedProperties(true)
     }
   }
