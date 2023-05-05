@@ -1,16 +1,22 @@
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import React from 'react';
+// import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+// import React from 'react';
+// import { Accordion, AccordionSummary, AccordianDetails, Typography } from "@mui/material";
+// import ExpandMoreIcon from '@mui/icons-material';
 
 
-const Accordion = () => {
 
-  return (
-    <View>
-      <Text>Accordion</Text>
-    </View>
-  )
-}
+// const AccordionComponent = () => {
 
-export default Accordion
+//   return (
+//     <View>
+//       <Accordion>
+//         <AccordionSummary id={'panel1-header'} aria-controls={'panel1-content'} expandIcon={<ExpandMoreIcon />}></AccordionSummary>
+//         <AccordianDetails></AccordianDetails>
+//       </Accordion>
+//     </View>
+//   )
+// }
 
-const styles = StyleSheet.create({})
+// export default AccordionComponent
+
+// const styles = StyleSheet.create({})
