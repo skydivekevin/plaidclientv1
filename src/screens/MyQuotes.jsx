@@ -9,7 +9,7 @@ import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
 import ApiContext from '../../context/ApiContext';
 
-// import AccordionComponent from "../components/Accordion";
+import Accordion from "../components/Accordion";
 
 import Quote from '../components/Quote'
 
@@ -29,6 +29,7 @@ const MyQuotes = () => {
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [vendorsByCategory, setVendorsByCategory] = useState()
 
   useEffect(() => {
     getKeys()
@@ -49,6 +50,10 @@ const MyQuotes = () => {
     collectCategories();
   }, [vendors])
 
+  useEffect(() => {
+    groupVendorsByCategory()
+  }, [categories])
+
   function getQuotes() {
     if (user.currentProperties?.length >= 1) {
       setNoAssociatedProperties(false)
@@ -57,7 +62,6 @@ const MyQuotes = () => {
         url: `${baseUrl}/quotes/getAllUserQuotes`,
       })
         .then(res => {
-          // console.log("res: ", res.data)
           setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
           setVerifiedQuotes(res.data.verifiedQuotes)
         })
@@ -177,7 +181,6 @@ const MyQuotes = () => {
           setVendors(data)
         })
       })
-      // .then(collectCategories())
       .catch(err => console.log("err: ", err))
   }
 
@@ -190,6 +193,7 @@ const MyQuotes = () => {
         }
         if (!newCategories.includes(vendor.categories[0])) {
           newCategories.push(vendor.categories[0])
+
         }
       }
       if (vendor.categories.length > 1) {
@@ -204,6 +208,24 @@ const MyQuotes = () => {
       }
     })
     setCategories(newCategories)
+  }
+
+  function groupVendorsByCategory() {
+    let newVendorsByCategory = [];
+    categories.map(category => {
+      let obj = { category: category, vendors: [] }
+      vendors.map(vendor => {
+        if (!vendor.categories.includes(category)) {
+          return
+        }
+        if (vendor.categories.includes(category)) {
+          obj.vendors.push(vendor)
+        }
+      })
+      newVendorsByCategory.push(obj)
+    })
+    console.log("newVendors: ", newVendorsByCategory[0].vendors[0].quotes)
+    setVendorsByCategory(newVendorsByCategory)
   }
 
   function renderQuotes() {
@@ -237,19 +259,20 @@ const MyQuotes = () => {
     )
   }
 
-  function renderCategories() {
-    categories.map(category => {
-      return <Text key={category}>Category: {category}</Text>
-    })
-  }
+  // function renderCategories() {
+  //   categories.map(category => {
+  //     return <Text key={category}>Category: {category}</Text>
+  //   })
+  // }
 
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {categories.map(category => {
-        return <Text key={category}>Category: {category}</Text>
+      {vendorsByCategory?.map(category => {
+        console.log("category: ", category.vendors.quotes)
+        return <Accordion data={category} key={category.category} />
       })}
-      {/* <AccordionComponent /> */}
+
       {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
       {/* {verifiedQuotes ? renderQuotes() : null} */}

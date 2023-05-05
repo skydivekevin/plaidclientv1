@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import CartContext from '../../context/CartContext';
 
 const Quote = (props) => {
+  console.log("quote")
 
   const { quote, property } = props
   const [currentQuote, setCurrentQuote] = useState()
@@ -12,7 +13,7 @@ const Quote = (props) => {
   const [selected, setSelected] = useState(false)
 
   const { cart } = useContext(CartContext);
- 
+
 
   useEffect(() => {
 
@@ -23,7 +24,7 @@ const Quote = (props) => {
   //     setCurrentQuote(quote)
   //   }
   // }, [currentQuote])
-  
+
   // function goToQuote(id) {
   //   const params = {
   //     quote: quote,
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize:25,
+    fontSize: 25,
     marginTop: 5
   },
   description: {
