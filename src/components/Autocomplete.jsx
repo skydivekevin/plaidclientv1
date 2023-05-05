@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import ApiContext, { places } from '../../context/ApiContext';
 import PropertyContext from '../../context/PropertyContext';
 
-const url="http://localhost:8080/api/properties"
+const url = "http://localhost:8080/api/properties"
 
 export default function Autocomplete() {
 
@@ -27,7 +27,7 @@ export default function Autocomplete() {
 
   useEffect(() => {
     setPlaceDescription();
-  })
+  }, [isShowingPredictions])
 
   useEffect(() => {
     if (!places) {
@@ -36,16 +36,16 @@ export default function Autocomplete() {
   })
 
   function getPlaces() {
-  
+
     axios({
       method: 'GET',
       url: `${baseUrl}/utils/fetchGoogle`,
     })
-    .then(res => {
-      const places = res.data.places
-      setPlaces(places)
-    })
-    .catch(err => console.log("err: ", err))
+      .then(res => {
+        const places = res.data.places
+        setPlaces(places)
+      })
+      .catch(err => console.log("err: ", err))
   }
 
   searchLocation = async (locationInput) => {
@@ -57,13 +57,13 @@ export default function Autocomplete() {
       method: 'GET',
       url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${places}&input=${locationInput}`,
     })
-    .then((res) => {
-      setPredictions(res.data.predictions)
-      setIsShowingPredictions(true)
-    })
-    .catch((err) => {
-      console.log("error: ", err)
-    })
+      .then((res) => {
+        setPredictions(res.data.predictions)
+        setIsShowingPredictions(true)
+      })
+      .catch((err) => {
+        console.log("error: ", err)
+      })
   }
 
   function handleSelected(location) {
@@ -83,11 +83,11 @@ export default function Autocomplete() {
         url: url,
         data: address
       })
-      .then(res => {
-        const property = res.data
-        setProperty(property)
-      })
-      .catch(err => console.log("error: ", err))
+        .then(res => {
+          const property = res.data
+          setProperty(property)
+        })
+        .catch(err => console.log("error: ", err))
     }
   }
 
@@ -120,61 +120,44 @@ export default function Autocomplete() {
   }
 
   function clearInput() {
-    console.log("clear input")
+    // that clear button isn't able to actually call this function...hence why the flatlist doesn't go away on clearInput...
     setIsShowingPredictions(false)
-    // setPlaceDescription()
+    console.log("clear input")
   }
 
   return (
-  <SafeAreaView style={styles.container}>
-    <View style={styles.autocompleteContainer}>
-      <TextInput
-        placeholder="Enter Address"
-        placeholderTextColor="#000"
-        style={styles.searchBox}
-        onChangeText={(locationInput) => searchLocation(locationInput)}
-        value={placeDescription}
-        clearButton={clearInput}
-        clearButtonMode="while-editing"
+    <SafeAreaView style={styles.container}>
+      <View style={styles.autocompleteContainer}>
+        <TextInput
+          placeholder="Enter Address"
+          placeholderTextColor="#000"
+          style={styles.searchBox}
+          onChangeText={(locationInput) => searchLocation(locationInput)}
+          value={placeDescription}
+          clearButton={clearInput}
+          clearButtonMode="while-editing"
         />
-{
-  // (isShowingPredictions && predictions) && ( this works; just commented out for testing
-  isShowingPredictions && (
-      <FlatList
-        data={predictions}
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity
-              style={styles.resultItem}
-              onPress={() => handleSelected(item)}>
-              <Text>{item.description}</Text>
-            </TouchableOpacity>
-          );
-        }}
-        keyExtractor={(item) => item.description}
-        style={styles.searchResultsContainer}  
-    />
-      )
-}
-
-    </View>
-    {/* <TextInput
-        placeholder="Enter verification code"
-        placeholderTextColor="#000"
-        autoCapitalize='none'
-        style={styles.searchBox}
-        onChangeText={(text) => setVerificationCode(text)}
-        clearButton={clearInput}
-        clearButtonMode="while-editing"
-        />
-    <View>
-    <Button 
-      title="Claim Property"
-      onPress={claimProperty}
-      style={styles.button}
-    />
-    </View> */}
-  </SafeAreaView>
+        {
+          // (isShowingPredictions && predictions) && (
+          isShowingPredictions && (
+            <FlatList
+              data={predictions}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    style={styles.resultItem}
+                    onPress={() => handleSelected(item)}>
+                    <Text>{item.description}</Text>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={(item) => item.description}
+              style={styles.searchResultsContainer}
+            />
+          )
+        }
+      </View>
+    </SafeAreaView>
   )
 }
 

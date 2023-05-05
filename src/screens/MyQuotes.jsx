@@ -23,81 +23,82 @@ const MyQuotes = () => {
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   const [cart, setCart] = useState([]);
   const [groupedQuotes, setGroupedQuotes] = useState([]);
-  const [allQuotesCount, setAllQuotesCount] = useState();
   const [verifiedQuotes, setVerifiedQuotes] = useState([]);
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
-  
+  const [vendors, setVendors] = useState([]);
+  const [categories, setCategories] = useState([]);
+
   useEffect(() => {
-    console.log("user: ", user)
+    // console.log("user: ", user)
     getKeys()
     if (user.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
       return
     }
-      getQuotes()
+    getQuotes()
   }, [user])
 
   useEffect(() => {
-    groupQuotesByVendor()
-  }, [verifiedQuotes, unverifiedQuotesCount])
-  
+    if (verifiedQuotes) {
+      groupQuotesByVendor()
+    }
+  }, [verifiedQuotes])
+
   function getQuotes() {
-    console.log("user.currentProperties: ", user)
     if (user.currentProperties?.length >= 1) {
       setNoAssociatedProperties(false)
       axios({
         method: 'GET',
         url: `${baseUrl}/quotes/getAllUserQuotes`,
       })
-      .then(res => {
-        console.log("res: ", res.data)
-        setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
-        setVerifiedQuotes(res.data.verifiedQuotes)
-      })
-      .catch(function (error) {
-        if (error.response) {
-          if (error.response.data.message === "unverified account") {
-            console.log("unverified account")
+        .then(res => {
+          // console.log("res: ", res.data)
+          setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
+          setVerifiedQuotes(res.data.verifiedQuotes)
+        })
+        .catch(function (error) {
+          if (error.response) {
+            if (error.response.data.message === "unverified account") {
+              console.log("unverified account")
+            }
           }
-        }
-      })
+        })
     }
-    if (user.currentProperties?.length === 0 ) {
+    if (user.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
     }
   }
 
   function getKeys() {
-    console.log("getKeys")
     axios({
       method: 'GET',
       url: `${baseUrl}/utils/fetchGoogle`,
     })
-    .then(res => {
-      const places = res.data.places
-      setPlaces(places)
-    })
-    .catch(err => console.log("err: ", err))
+      .then(res => {
+        const places = res.data.places
+        setPlaces(places)
+      })
+      .catch(err => console.log("err: ", err))
   }
 
   function noProperties() {
     console.log("no properties")
-    return (    
+    return (
       <View>
         <Text>You don't have any associated properties to manage, add one by clicking below or learn more about Plaid.</Text>
-        <Button 
+        <Button
           title="Add property"
           onPress={() => {
             navigation.navigate("Claim Property")
           }}
         />
-        <Button 
+        <Button
           title="Learn More"
           onPress={() => {
             navigation.navigate("Learn More")
           }}
         />
-    </View>  
+      </View>
     )
   }
 
@@ -121,57 +122,96 @@ const MyQuotes = () => {
   function groupQuotesByVendor() {
 
     // should look like: {vendor1: [{quote1}, {quote2}], vendor2: [{quote1}]}
-    //setGroupedQuotes( [{category: exterior, vendors: [vendor1, vendor2, vendor3], quotes: [quote1, quote2, quote3]}, {category: interior, vendors: [...], quotes: [] }, {}]
+    // setGroupedQuotes( [{category: exterior, vendors: [vendor1, vendor2, vendor3], quotes: [quote1, quote2, quote3]}, {category: interior, vendors: [...], quotes: [] }, {}]
+    // vendor categories: ['interior services', 'exterior services', 'electrical', 'plumbing']
     let categories = [];
-    let vendors = [];
-    let groupedQuotes = [];
+    let vendorIds = [];
+    let groupedQuotesArr = [];
+    let quotesByCompany = [];
     verifiedQuotes?.map(quote => {
-      if (quote.vendorCategories.length === 0) {
-        return
+
+      // group quotes by vendor
+      if (!vendorIds.includes(quote.vendorId)) {
+        vendorIds.push(quote.vendorId)
+        const vendor = {
+          vendorId: quote.vendorId,
+          quotes: [
+            quote
+          ]
+        }
+        groupedQuotesArr.push(vendor)
       }
-      if (quote.vendorCategories.length > 0) {
-        quote.vendorCategories.map(category => {
+
+      if (vendorIds.includes(quote.vendorId)) {
+        const index = groupedQuotesArr.findIndex(vendor => vendor.id === quote.vendorId)
+        groupedQuotesArr[index]?.quotes?.push(quote)
+        // console.log("groupedQuotesArr: ", groupedQuotesArr)
+      }
+    })
+    // console.log("groupedQuotes: ", groupedQuotesArr)
+    setGroupedQuotes(groupedQuotesArr)
+    getVendorInformation(vendorIds)
+
+  }
+
+  function getVendorInformation(vendorIds) {
+    axios({
+      method: 'POST',
+      url: `${baseUrl}/vendors/getVendorInformation`,
+      data: vendorIds
+    })
+      .then(res => {
+        const vendorInfo = res.data;
+
+        let data = []
+        vendorInfo.map(vendor => {
+          const index = groupedQuotes.findIndex(quote => quote.vendorId === vendor._id)
+          const quotes = groupedQuotes[index].quotes
+          vendor.quotes = quotes;
+          data.push(vendor)
+          setVendors(data)
+        })
+      })
+      .then(collectCategories())
+      .catch(err => console.log("err: ", err))
+  }
+
+  function collectCategories() {
+    let categories = [];
+    vendors.map(vendor => {
+      if (vendor.categories.length <= 1) {
+        if (categories.includes(vendor.categories[0])) {
+          return
+        }
+        if (!categories.includes(vendor.categories[0])) {
+          categories.push(vendor.categories[0])
+        }
+      }
+      if (vendor.categories.length > 1) {
+        vendor.categories.map(category => {
+          if (categories.includes(category)) {
+            return
+          }
           if (!categories.includes(category)) {
             categories.push(category)
-            let newObj = {"category": category}
-            console.log("newObj: ", newObj)
           }
         })
       }
-      if (!categories.includes(quote.vendorCategories)) {
-        categories.push(quote.category)
-
-        groupedQuotes.push({"category": quote.category})
-      }
-
-
-      // groupedQuotes.map(item => {
-  
-      // })
-
-
-      // if (!vendors.includes(quote.vendorId)) {
-
-      // }
-
-
-      console.log("vendorId: ", quote)
     })
-
+    setCategories(categories)
   }
-  // console.log("groupedQuotes: ", groupedQuotes)
 
   function renderQuotes() {
     return (
       <View style={styles.renderQuotesContainer}>
-      <Text>Click on a quote to add it to your cart</Text>
-      <ScrollView>
-      {verifiedQuotes.map(quote => {
-        return (
-            <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
-        )
-      })}
-      </ScrollView>
+        <Text>Click on a quote to add it to your cart</Text>
+        <ScrollView>
+          {verifiedQuotes.map(quote => {
+            return (
+              <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
+            )
+          })}
+        </ScrollView>
       </View>
     )
   }
@@ -182,7 +222,7 @@ const MyQuotes = () => {
         <Text>
           There are more quotes available on your property. Verify property to see them and add more!
         </Text>
-          <Button 
+        <Button
           title="Verify Property"
           onPress={() => {
             navigation.navigate("Claim Property")
@@ -192,16 +232,15 @@ const MyQuotes = () => {
     )
   }
 
-  function renderFullAccess() {
-    return renderQuotes()
-  }
-
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {noAssociatedProperties ? noProperties(): null}
+      {categories?.map(category => {
+        return <Text>Category: {category}</Text>
+      })}
+      {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
-      {verifiedQuotes ? renderQuotes() : null}
+      {/* {verifiedQuotes ? renderQuotes() : null} */}
     </View>
   )
 }
@@ -223,3 +262,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+
+      // if (quote.vendorCategories.length > 0) {
+      //   quote.vendorCategories.map(category => {
+      //     if (!categories.includes(category)) {
+      //       categories.push(category)
+      //       let newObj = { "category": category }
+      //     }
+      //   })
+      // }
+      // if (!categories.includes(quote.vendorCategories)) {
+      //   categories.push(quote.category)
+
+      //   groupedQuotes.push({ "category": quote.category })
+      // }
+
+
+      // groupedQuotes.map(item => {
+
+      // })
+
+
+      // if (!vendors.includes(quote.vendorId)) {
+
+      // }
+
+
+      // console.log("vendorId: ", quote)
