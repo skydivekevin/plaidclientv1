@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 
 const CartContext = React.createContext();
 
-export const CartProvider = (props)=> {
+export const CartProvider = (props) => {
   const [cart, setCart] = useState([]);
 
   function updateCart(quote) {
-    // console.log("quote: ", quote)
-    // console.log("cart: ", cart)
     if (cart.length === 0) {
       setCart([quote])
     }
-    if (cart.length > 0 ) {
+    if (cart.length > 0) {
       cart.map((item, index) => {
         // console.log("greater than zero")
         if (item._id === quote._id) {
@@ -30,7 +28,7 @@ export const CartProvider = (props)=> {
     }
   }
 
-  return(
+  return (
     <CartContext.Provider value={{
       cart, setCart, updateCart
     }}>

@@ -5,24 +5,24 @@ import { UserProvider } from "./context/UserContext";
 import { QuotesProvider } from "./context/QuotesContext";
 import { ApiProvider } from "./context/ApiContext";
 import { CartProvider } from "./context/CartContext";
+import { PropertyProvider } from "./context/PropertyContext";
 
 import MainApp from "./MainApp";
-import { PropertyProvider } from "./context/PropertyContext";
 
 export default function App() {
   return (
     <ApiProvider>
+          <QuotesProvider>
       <NavigationContainer>
         <UserProvider>
-          <QuotesProvider>
             <PropertyProvider>
               <CartProvider>
                 <MainApp />
               </CartProvider>
             </PropertyProvider>
-          </QuotesProvider>
         </UserProvider>
       </NavigationContainer>
+          </QuotesProvider>
     </ApiProvider>
   );
 }

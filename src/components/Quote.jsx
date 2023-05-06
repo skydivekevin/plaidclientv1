@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import CartContext from '../../context/CartContext';
 
 const Quote = (props) => {
-  console.log("quote")
 
   const { quote, property } = props
   const [currentQuote, setCurrentQuote] = useState()

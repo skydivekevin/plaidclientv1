@@ -13,9 +13,8 @@ import { toggleAnimation } from '../animations/toggleAnimation';
 import { useNavigation } from '@react-navigation/native';
 
 const AccordionItem = (props) => {
-  console.log("props: ", props)
   const category = props.category
-  const vendors = props.vendors
+  const vendors = props.data.vendors
   const [showContent, setShowContent] = useState(false);
   const animationController = useRef(new Animated.Value(0)).current;
 
@@ -38,8 +37,10 @@ const AccordionItem = (props) => {
   })
 
   function goToVendorQuotes(vendor) {
+    console.log("vendor")
     navigation.navigate("Company Quotes", {
-      vendorInfo: vendor
+      vendorId: vendor._id,
+      companyName: vendor.companyName
     })
 
   }
@@ -49,12 +50,10 @@ const AccordionItem = (props) => {
       <TouchableOpacity onPress={() => toggleListItem()}>
         <View style={styles.titleContainer}>
 
-
-
           {/* Title here is going to be category title */}
           <Text style={styles.title}>{props.data.category}</Text>
           <Animated.View style={{ transform: [{ rotateZ: arrowTransform }] }}>
-            <MaterialIcons name={'keyboard-arrow-right'} />
+            <MaterialIcons name={'keyboard-arrow-right'} style={styles.arrow} />
           </Animated.View>
         </View>
       </TouchableOpacity>
@@ -63,10 +62,10 @@ const AccordionItem = (props) => {
       {/* Body here is going to be the list of vendors */}
       {showContent && (
         <View style={styles.body}>
-          {props.data.vendors.map(vendor => {
+          {props.data.vendors?.map(vendor => {
             return (
-              <TouchableOpacity onPress={() => goToVendorQuotes(vendor)} key={vendor._id}>
-                <Text>{vendor.companyName}</Text>
+              <TouchableOpacity onPress={() => goToVendorQuotes(vendor)} key={vendor._id} style={styles.listItem}>
+                <Text style={styles.companyName}>{vendor.companyName}</Text>
               </TouchableOpacity>
             )
           })}
@@ -83,14 +82,16 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: '2%',
     borderRadius: 12,
-    backgroundColor: 'blue',
+    backgroundColor: '#f0f0f0',
     marginBottom: '2%',
     fontWeight: 'bold',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderColor: 'gray',
+    borderWidth: 1.5
   },
   title: {
-    fontSize: 16,
-    color: 'yellow',
+    fontSize: 30,
+    color: 'black',
     fontWeight: 'bold',
   },
   body: {
@@ -100,6 +101,26 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+  },
+  listItem: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'left',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    padding: 10,
+    width: '100%',
+  },
+  companyName: {
+    color: 'black',
+    fontWeight: '500',
+    fontSize: 20
+  },
+  arrow: {
+    height: 30,
+    fontSize: 30,
+    fontWeight: 'bold'
   }
 })

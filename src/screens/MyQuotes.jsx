@@ -11,21 +11,19 @@ import ApiContext from '../../context/ApiContext';
 
 import Accordion from "../components/Accordion";
 
-import Quote from '../components/Quote'
-
 const baseUrl = 'http://localhost:8080/api';
 
 const MyQuotes = () => {
   const navigation = useNavigation();
 
   const { user } = useContext(UserContext);
-  // const { quotes, setQuotes, provisionalQuotesContext, setProvisionalQuotesContext } = useContext(QuotesContext);
+  const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
   const { setPlaces } = useContext(ApiContext);
 
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   const [cart, setCart] = useState([]);
   const [groupedQuotes, setGroupedQuotes] = useState([]);
-  const [verifiedQuotes, setVerifiedQuotes] = useState([]);
+  // const [verifiedQuotes, setVerifiedQuotes] = useState([]);
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -62,6 +60,7 @@ const MyQuotes = () => {
         url: `${baseUrl}/quotes/getAllUserQuotes`,
       })
         .then(res => {
+          // console.log("res: ", res.data.verifiedQuotes)
           setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
           setVerifiedQuotes(res.data.verifiedQuotes)
         })
@@ -91,7 +90,7 @@ const MyQuotes = () => {
   }
 
   function noProperties() {
-    console.log("no properties")
+    // console.log("no properties")
     return (
       <View>
         <Text>You don't have any associated properties to manage, add one by clicking below or learn more about Plaid.</Text>
@@ -111,21 +110,21 @@ const MyQuotes = () => {
     )
   }
 
-  function handleSelected(quote, selected) {
-    if (selected) {
-      setCart([...cart, quote])
-    }
-    if (!selected) {
-      cart.map((item) => {
-        if (item._id === quote._id) {
-          const newCart = cart.filter(function (letter) {
-            return letter !== item
-          })
-          setCart(newCart)
-        }
-      })
-    }
-  }
+  // function handleSelected(quote, selected) {
+  //   if (selected) {
+  //     setCart([...cart, quote])
+  //   }
+  //   if (!selected) {
+  //     cart.map((item) => {
+  //       if (item._id === quote._id) {
+  //         const newCart = cart.filter(function (letter) {
+  //           return letter !== item
+  //         })
+  //         setCart(newCart)
+  //       }
+  //     })
+  //   }
+  // }
 
   ///////CART IS WORKING; NEXT ORDER OF BUSINESS IS GOING TO BE CATEGORIZING/ORGANIZING THESE QUOTES INTO THE BASIC CATEGORIES OF 'interior services', 'exterior services', 'electrical', 'plumbing'
   function groupQuotesByVendor() {
@@ -153,7 +152,7 @@ const MyQuotes = () => {
 
       if (vendorIds.includes(quote.vendorId)) {
         const index = groupedQuotesArr.findIndex(vendor => vendor.id === quote.vendorId)
-        groupedQuotesArr[index]?.quotes?.push(quote)
+        groupedQuotesArr[index]?.quotes.push(quote)
         // console.log("groupedQuotesArr: ", groupedQuotesArr)
       }
     })
@@ -224,24 +223,27 @@ const MyQuotes = () => {
       })
       newVendorsByCategory.push(obj)
     })
-    console.log("newVendors: ", newVendorsByCategory[0].vendors[0].quotes)
-    setVendorsByCategory(newVendorsByCategory)
+    // setVendorsByCategory(newVendorsByCategory)
+    // console.log("newvendorsByCategory in MyQuotes: ", newVendorsByCategory)
+    // console.log("newvendorsByCategory: ", newVendorsByCategory)
+    setquotesAndVendorsByCategory(newVendorsByCategory)
+    // console.log("quotesAndVendorsByCategory in MyQuotes: ", quotesAndVendorsByCategory[0].vendors[0])
   }
 
-  function renderQuotes() {
-    return (
-      <View style={styles.renderQuotesContainer}>
-        <Text>Click on a quote to add it to your cart</Text>
-        <ScrollView>
-          {verifiedQuotes.map(quote => {
-            return (
-              <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
-            )
-          })}
-        </ScrollView>
-      </View>
-    )
-  }
+  // function renderQuotes() {
+  //   return (
+  //     <View style={styles.renderQuotesContainer}>
+  //       <Text>Click on a quote to add it to your cart</Text>
+  //       <ScrollView>
+  //         {verifiedQuotes.map(quote => {
+  //           return (
+  //             <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
+  //           )
+  //         })}
+  //       </ScrollView>
+  //     </View>
+  //   )
+  // }
 
   function renderMoreQuotesNotification() {
     return (
@@ -259,22 +261,19 @@ const MyQuotes = () => {
     )
   }
 
-  // function renderCategories() {
-  //   categories.map(category => {
-  //     return <Text key={category}>Category: {category}</Text>
-  //   })
-  // }
-
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {vendorsByCategory?.map(category => {
-        console.log("category: ", category.vendors.quotes)
-        return <Accordion data={category} key={category.category} />
-      })}
+      {
+        quotesAndVendorsByCategory.map(category => {
+          return <Accordion data={category} key={category.category} />
+        })
+
+      }
 
       {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
+      {/* {unverifiedQuotesCount ? renderMoreQuotesNotification() : null} */}
       {/* {verifiedQuotes ? renderQuotes() : null} */}
     </View>
   )
@@ -286,8 +285,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 10
-
+    paddingTop: 10,
+    height: '100%',
+    backgroundColor: '#f0f0f0'
   },
   renderQuotesContainer: {
     alignItems: 'center'
