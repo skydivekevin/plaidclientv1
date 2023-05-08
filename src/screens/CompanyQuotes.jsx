@@ -2,12 +2,14 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
 import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
+import CartContext from '../../context/CartContext';
 
 const CompanyQuotes = ({ route, navigation }) => {
   const vendorId = route.params.vendorId
   const companyName = route.params.companyName
 
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
+  const { cart, setCart } = useContext(CartContext);
 
   const [quotes, setQuotes] = useState([])
 
@@ -31,12 +33,27 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   function renderQuotes() {
     if (!quotes) {
-      console.log("nada")
       return <Text>Quotes Loading</Text>
     }
     if (quotes) {
       quotes.map(quote => {
         return <Quote quote={quote} key={quote._id} />
+      })
+    }
+  }
+
+  function handleSelected(quote, selected) {
+    if (selected) {
+      setCart([...cart, quote])
+    }
+    if (!selected) {
+      cart.map((item) => {
+        if (item._id === quote._id) {
+          const newCart = cart.filter(function (letter) {
+            return letter !== item
+          })
+          setCart(newCart)
+        }
       })
     }
   }
@@ -50,13 +67,11 @@ const CompanyQuotes = ({ route, navigation }) => {
     )
   }
 
-
-
   return (
     <View style={styles.container}>
       <Text style={styles.companyName}>{companyName}</Text>
       {quotes ? quotes.map(quote => {
-        return <Quote quote={quote} key={quote._id} />
+        return <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
       })
         :
         <Text>Quotes Loading</Text>

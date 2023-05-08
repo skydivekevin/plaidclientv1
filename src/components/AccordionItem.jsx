@@ -37,10 +37,9 @@ const AccordionItem = (props) => {
   })
 
   function goToVendorQuotes(vendor) {
-    console.log("vendor")
     navigation.navigate("Company Quotes", {
       vendorId: vendor._id,
-      companyName: vendor.companyName
+      companyName: vendor.companyName,
     })
 
   }

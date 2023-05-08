@@ -18,11 +18,6 @@ const ClaimProperty = () => {
 
   const [verificationCode, setVerificationCode] = useState("")
 
-
-  // console.log("property: ", property)
-  // console.log("verification: ", verificationCode)
-
-
   function claimProperty() {
     //axios POST to person, claiming property
     let data;
@@ -42,15 +37,14 @@ const ClaimProperty = () => {
       url: `${baseUrl}/properties/claim`,
       data
     })
-    .then(res => {
-      setUser(res.data)
-      console.log("res.data: ", res.data)
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log("error: ", error.response)
-      }
-    })
+      .then(res => {
+        setUser(res.data)
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log("error: ", error.response)
+        }
+      })
 
 
     //if successful, navigation.navigate("Dashboard")
@@ -68,32 +62,32 @@ const ClaimProperty = () => {
 
   return (
     <View style={styles.appContainer}>
-        <View style={styles.autocomplete}>
-          <Autocomplete />
-        </View>
-        <View style={styles.verificationTextBox}>
-      <TextInput
-        placeholder="Enter verification code"
-        placeholderTextColor="#000"
-        autoCapitalize='none'
-        style={styles.verificationCode}
-        onChangeText={(text) => setVerificationCode(text)}
-        clearButtonMode="while-editing"
+      <View style={styles.autocomplete}>
+        <Autocomplete />
+      </View>
+      <View style={styles.verificationTextBox}>
+        <TextInput
+          placeholder="Enter verification code"
+          placeholderTextColor="#000"
+          autoCapitalize='none'
+          style={styles.verificationCode}
+          onChangeText={(text) => setVerificationCode(text)}
+          clearButtonMode="while-editing"
         />
-        </View>
-    <View style={styles.buttonContainer}>
-    <Button 
-      title="Claim Property"
-      onPress={claimProperty}
-      style={styles.button}
-    />
-    <Button 
-      title="Request Verification Code"
-      onPress={claimProperty}
-      style={styles.button}
-    />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Claim Property"
+          onPress={claimProperty}
+          style={styles.button}
+        />
+        <Button
+          title="Request Verification Code"
+          onPress={claimProperty}
+          style={styles.button}
+        />
+      </View>
     </View>
-  </View>
   )
 }
 

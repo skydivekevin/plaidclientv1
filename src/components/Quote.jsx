@@ -7,32 +7,27 @@ import CartContext from '../../context/CartContext';
 const Quote = (props) => {
 
   const { quote, property } = props
-  const [currentQuote, setCurrentQuote] = useState()
   const navigation = useNavigation()
   const [selected, setSelected] = useState(false)
 
   const { cart } = useContext(CartContext);
 
 
-  useEffect(() => {
 
+  useEffect(() => {
+    something()
   })
 
-  // useEffect(() => {
-  //   if (!currentQuote) {
-  //     setCurrentQuote(quote)
-  //   }
-  // }, [currentQuote])
-
-  // function goToQuote(id) {
-  //   const params = {
-  //     quote: quote,
-  //     property: property
-  //   }
-  //   navigation.navigate("Modify Quote", params)
-  // }
+  function something() {
+    cart.map(cartItem => {
+      if (cartItem._id === quote._id) {
+        setSelected(true)
+      }
+    })
+  }
 
   function handleSelection(quote) {
+
     if (selected) {
       setSelected(false)
       props.handleSelected(quote, false)

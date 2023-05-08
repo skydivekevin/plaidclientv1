@@ -11,9 +11,7 @@ export const CartProvider = (props) => {
     }
     if (cart.length > 0) {
       cart.map((item, index) => {
-        // console.log("greater than zero")
         if (item._id === quote._id) {
-          // console.log("match")
           const newCart = cart.filter(function (letter) {
             return letter !== item
           })
@@ -23,8 +21,6 @@ export const CartProvider = (props) => {
           setCart([...cart, quote])
         }
       })
-
-
     }
   }
 

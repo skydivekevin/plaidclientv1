@@ -122,7 +122,6 @@ export default function Autocomplete() {
   function clearInput() {
     // that clear button isn't able to actually call this function...hence why the flatlist doesn't go away on clearInput...
     setIsShowingPredictions(false)
-    console.log("clear input")
   }
 
   return (

@@ -7,7 +7,6 @@ const RequestQuote = () => {
   const [description, setDescription] = useState();
 
   function sendRequest() {
-    console.log("send request")
   }
   return (
     <View style={styles.container}>
@@ -15,33 +14,33 @@ const RequestQuote = () => {
 
       <View>
         <TextInput
-        placeholder="Enter vendors email address"
-        placeholderTextColor="#000"
-        autoCapitalize='none'
-        style={styles.verificationCode}
-        onChangeText={(text) => setEmail(text)}
-        clearButtonMode="while-editing"
+          placeholder="Enter vendors email address"
+          placeholderTextColor="#000"
+          autoCapitalize='none'
+          style={styles.verificationCode}
+          onChangeText={(text) => setEmail(text)}
+          clearButtonMode="while-editing"
         />
       </View>
       <View>
         <TextInput
-        placeholder="Service description"
-        placeholderTextColor="#000"
-        autoCapitalize='none'
-        style={styles.verificationCode}
-        onChangeText={(text) => setDescription(text)}
-        clearButtonMode="while-editing"
+          placeholder="Service description"
+          placeholderTextColor="#000"
+          autoCapitalize='none'
+          style={styles.verificationCode}
+          onChangeText={(text) => setDescription(text)}
+          clearButtonMode="while-editing"
         />
       </View>
 
 
       <View style={styles.buttonContainer}>
-    <Button 
-      title="Request Quotes"
-      onPress={sendRequest}
-    />
+        <Button
+          title="Request Quotes"
+          onPress={sendRequest}
+        />
+      </View>
     </View>
-  </View>
 
   )
 }
