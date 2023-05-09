@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   cardNotSelected: {
     width: 300,
     borderWidth: 2,
-    borderColor: "#8A9A5B",
+    borderColor: "gray",
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -99,13 +99,13 @@ const styles = StyleSheet.create({
   cardSelected: {
     width: 300,
     borderWidth: 2,
-    borderColor: "#8A9A5B",
+    borderColor: "green",
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
     borderRadius: 10,
     paddingHorizontal: 5,
-    backgroundColor: "blue",
+    // backgroundColor: "blue",
   }
 });

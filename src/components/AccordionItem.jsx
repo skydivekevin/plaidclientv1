@@ -40,6 +40,7 @@ const AccordionItem = (props) => {
     navigation.navigate("Company Quotes", {
       vendorId: vendor._id,
       companyName: vendor.companyName,
+      website: vendor.website
     })
 
   }

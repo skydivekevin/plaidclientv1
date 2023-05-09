@@ -20,6 +20,7 @@ const MyQuotes = () => {
   const { user } = useContext(UserContext);
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
   const { setPlaces } = useContext(ApiContext);
+  const { cart } = useContext(CartContext);
 
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   // const [cart, setCart] = useState([]);
@@ -28,8 +29,8 @@ const MyQuotes = () => {
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [vendorsByCategory, setVendorsByCategory] = useState();
-  const { cart } = useContext(CartContext)
+  const [vendorsByCategory, setVendorsByCategory] = useState([]);
+  const [noCategories, setNoCategories] = useState();
 
   useEffect(() => {
     getKeys()
@@ -110,21 +111,21 @@ const MyQuotes = () => {
     )
   }
 
-  function handleSelected(quote, selected) {
-    if (selected) {
-      setCart([...cart, quote])
-    }
-    if (!selected) {
-      cart.map((item) => {
-        if (item._id === quote._id) {
-          const newCart = cart.filter(function (letter) {
-            return letter !== item
-          })
-          setCart(newCart)
-        }
-      })
-    }
-  }
+  // function handleSelected(quote, selected) {
+  //   if (selected) {
+  //     setCart([...cart, quote])
+  //   }
+  //   if (!selected) {
+  //     cart.map((item) => {
+  //       if (item._id === quote._id) {
+  //         const newCart = cart.filter(function (letter) {
+  //           return letter !== item
+  //         })
+  //         setCart(newCart)
+  //       }
+  //     })
+  //   }
+  // }
 
   ///////CART IS WORKING; NEXT ORDER OF BUSINESS IS GOING TO BE CATEGORIZING/ORGANIZING THESE QUOTES INTO THE BASIC CATEGORIES OF 'interior services', 'exterior services', 'electrical', 'plumbing'
   function groupQuotesByVendor() {
@@ -155,6 +156,7 @@ const MyQuotes = () => {
         groupedQuotesArr[index]?.quotes.push(quote)
       }
     })
+    console.log("groupedQutoesArr: ", groupedQuotesArr)
     setGroupedQuotes(groupedQuotesArr)
     getVendorInformation(vendorIds)
 
@@ -184,7 +186,13 @@ const MyQuotes = () => {
   function collectCategories() {
     let newCategories = [];
     vendors.map(vendor => {
-      if (vendor.categories.length <= 1) {
+      console.log("vendor: ", vendor)
+      if (vendor.categories.length === 0) {
+        console.log("no categories")
+        setNoCategories(true)
+        return
+      }
+      if (vendor.categories.length === 1) {
         if (newCategories.includes(vendor.categories[0])) {
           return
         }
@@ -204,6 +212,7 @@ const MyQuotes = () => {
         })
       }
     })
+    console.log("newCategories: ", newCategories)
     setCategories(newCategories)
   }
 
@@ -240,15 +249,34 @@ const MyQuotes = () => {
     )
   }
 
+  function renderNoQuotes() {
+    return (
+      <Text>There aren't any current quotes on your property. Request a quote from your favorite contractor here.</Text>
+    )
+  }
+
+  // function renderAccordions() {
+  //   // console.log("quotesAndVendors: ", quotesAndVendorsByCategory)
+  //   quotesAndVendorsByCategory.map(category => {
+  //     console.log("category: ", category)
+  //     return <Accordion data={category} key={category.category} />
+  //   })
+
+  // }
+
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {
+      {verifiedQuotes.length > 0 ?
         quotesAndVendorsByCategory.map(category => {
           return <Accordion data={category} key={category.category} />
         })
-
+        :
+        renderNoQuotes()
       }
+
+
+
 
       {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}

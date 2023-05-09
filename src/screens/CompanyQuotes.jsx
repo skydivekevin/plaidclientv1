@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
 import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
@@ -7,11 +7,14 @@ import CartContext from '../../context/CartContext';
 const CompanyQuotes = ({ route, navigation }) => {
   const vendorId = route.params.vendorId
   const companyName = route.params.companyName
+  const website = route.params.website
 
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
   const { cart, setCart } = useContext(CartContext);
 
-  const [quotes, setQuotes] = useState([])
+  const [quotes, setQuotes] = useState([]);
+  const [cartTotal, setCartTotal] = useState();
+  const [checkoutData, setCheckoutData] = useState([]);
 
   useEffect(() => {
     renderQuotes()
@@ -67,12 +70,67 @@ const CompanyQuotes = ({ route, navigation }) => {
     )
   }
 
+  function checkout() {
+    let data = []
+    let vendorIds = []
+    cart.map(item => {
+      console.log("map")
+      if (!vendorIds.includes(item.vendorId)) {
+        let obj = {};
+        vendorIds.push(item.vendorId)
+        obj.quotes = [item._id]
+        obj.vendorId = item.vendorId
+        // console.log("obj: ", obj)
+        data.push(obj)
+        return
+      }
+
+      if (vendorIds.includes(item.vendorId)) {
+        console.log("item: ", item)
+        // const index = data.map((vendor) => vendor.vendorId.findIndex(item.vendorId))
+        const index = data.findIndex((item) => item.vendorId === item.vendorId)
+        if (data[index].quotes.includes(item._id)) {
+          return
+        }
+        if (!data[index].quotes.includes(item._id)) {
+          data[index].quotes.push(item._id)
+          return
+        }
+
+        // console.log("index: ", index)
+        return
+      }
+
+    })
+    // setCheckoutData(data)
+    postInfoToVendor(data)
+  }
+
+  function postInfoToVendor(data) {
+    console.log("data: ", data)
+  }
+
+  function calculateCart() {
+
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.companyName}>{companyName}</Text>
-      {quotes ? quotes.map(quote => {
-        return <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
-      })
+      <Text>{website}</Text>
+      {quotes ?
+        <>
+          <Button
+            title="Request Services"
+            onPress={checkout}
+            style={styles.button}
+          />
+          <ScrollView>
+            {quotes.map(quote => {
+              return <Quote quote={quote} handleSelected={handleSelected} key={quote._id} />
+            })}
+          </ScrollView>
+        </>
         :
         <Text>Quotes Loading</Text>
 
