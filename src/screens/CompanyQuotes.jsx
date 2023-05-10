@@ -1,8 +1,11 @@
 import { ScrollView, StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
+import axios from 'axios';
 import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
 import CartContext from '../../context/CartContext';
+
+const baseUrl = 'http://localhost:8080/api';
 
 const CompanyQuotes = ({ route, navigation }) => {
   const vendorId = route.params.vendorId
@@ -72,42 +75,51 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   function checkout() {
     let data = []
-    let vendorIds = []
     cart.map(item => {
-      console.log("map")
-      if (!vendorIds.includes(item.vendorId)) {
-        let obj = {};
-        vendorIds.push(item.vendorId)
-        obj.quotes = [item._id]
-        obj.vendorId = item.vendorId
-        // console.log("obj: ", obj)
-        data.push(obj)
-        return
-      }
-
-      if (vendorIds.includes(item.vendorId)) {
-        console.log("item: ", item)
-        // const index = data.map((vendor) => vendor.vendorId.findIndex(item.vendorId))
-        const index = data.findIndex((item) => item.vendorId === item.vendorId)
-        if (data[index].quotes.includes(item._id)) {
-          return
-        }
-        if (!data[index].quotes.includes(item._id)) {
-          data[index].quotes.push(item._id)
-          return
-        }
-
-        // console.log("index: ", index)
-        return
-      }
-
+      // console.log("item: ", item)
+      data.push(item._id)
     })
-    // setCheckoutData(data)
+    // let vendorIds = []
+    // cart.map(item => {
+    // data.push(item._id)
+    // let obj = {};
+    //   if (!vendorIds.includes(item.vendorId)) {
+    //     vendorIds.push(item.vendorId)
+    //     obj.quotes = [item._id]
+    //     obj.vendorId = item.vendorId
+    //     // console.log("obj: ", obj)
+    //     data.push(obj)
+    //     return
+    //   }
+
+    //   if (vendorIds.includes(item.vendorId)) {
+    //     const index = data.findIndex((obj) => obj.vendorId === item.vendorId)
+    //     if (data[index].quotes.includes(item._id)) {
+    //       return
+    //     }
+    //     if (!data[index].quotes.includes(item._id)) {
+    //       data[index].quotes.push(item._id)
+    //       return
+    //     }
+    //     return
+    //   }
+    // })
+    console.log("data: ", data)
     postInfoToVendor(data)
   }
 
   function postInfoToVendor(data) {
-    console.log("data: ", data)
+    axios({
+      method: 'POST',
+      url: `${baseUrl}/jobs/jobRequest`,
+      data
+    })
+      .then((res) => {
+        console.log("res: ", res)
+      })
+      .catch((err) => {
+        console.log("error: ", err)
+      })
   }
 
   function calculateCart() {
