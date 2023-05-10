@@ -4,6 +4,7 @@ import axios from 'axios';
 import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
 import CartContext from '../../context/CartContext';
+import JobsContext from '../../context/JobsContext';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -14,6 +15,7 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
   const { cart, setCart } = useContext(CartContext);
+  const { jobs, setJobs } = useContext(JobsContext);
 
   const [quotes, setQuotes] = useState([]);
   const [cartTotal, setCartTotal] = useState();
@@ -21,11 +23,11 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   useEffect(() => {
     renderQuotes()
-  }, [quotes, verifiedQuotes])
+  }, [quotes, verifiedQuotes]);
 
   useEffect(() => {
     getQuotes()
-  }, [vendorId])
+  }, [vendorId]);
 
   function getQuotes() {
     let allQuotes = [];
@@ -79,32 +81,7 @@ const CompanyQuotes = ({ route, navigation }) => {
       // console.log("item: ", item)
       data.push(item._id)
     })
-    // let vendorIds = []
-    // cart.map(item => {
-    // data.push(item._id)
-    // let obj = {};
-    //   if (!vendorIds.includes(item.vendorId)) {
-    //     vendorIds.push(item.vendorId)
-    //     obj.quotes = [item._id]
-    //     obj.vendorId = item.vendorId
-    //     // console.log("obj: ", obj)
-    //     data.push(obj)
-    //     return
-    //   }
-
-    //   if (vendorIds.includes(item.vendorId)) {
-    //     const index = data.findIndex((obj) => obj.vendorId === item.vendorId)
-    //     if (data[index].quotes.includes(item._id)) {
-    //       return
-    //     }
-    //     if (!data[index].quotes.includes(item._id)) {
-    //       data[index].quotes.push(item._id)
-    //       return
-    //     }
-    //     return
-    //   }
-    // })
-    console.log("data: ", data)
+    // console.log("dataasdf: ", data)
     postInfoToVendor(data)
   }
 
@@ -115,7 +92,8 @@ const CompanyQuotes = ({ route, navigation }) => {
       data
     })
       .then((res) => {
-        console.log("res: ", res)
+        console.log("resasf: ", res.data)
+        setUser(res.data)
       })
       .catch((err) => {
         console.log("error: ", err)

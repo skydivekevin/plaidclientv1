@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useContext, useState } from 'react';
 import JobsContext from '../../context/JobsContext';
-import Job from "../components/Job";
+import UserContext from '../../context/UserContext';
+import JobTile from "../components/JobTile";
 
 
 
@@ -12,12 +13,13 @@ const baseUrl = 'http://localhost:8080/api';
 export default function MyJobs() {
 
   const { jobs, setJobs } = useContext(JobsContext)
+  const { user, setUser } = useContext(UserContext)
 
   const [jobsState, setJobsState] = useState([])
 
   useEffect(() => {
     getJobs()
-  }, [])
+  }, [user])
 
   function getJobs() {
     console.log("getJobs")
@@ -26,9 +28,8 @@ export default function MyJobs() {
       url: `${baseUrl}/jobs/homeownerJobs`,
     })
       .then((res) => {
-        console.log("res: ", res.data)
+        // console.log("res: ", res.data)
         setJobs(res.data)
-        setJobsState(res.data)
       })
       .catch((err) => {
         if (err.response) {
@@ -43,22 +44,19 @@ export default function MyJobs() {
   }
 
   function renderJobs() {
-    console.log("renderJobs")
     jobs.map(job => {
-      <Job job={job} key={job._id} />
+      <JobTile job={job} key={job._id} />
     })
-
   }
 
   return (
     <View style={styles.container}>
-      {jobsState && (
+      {jobs && (
         jobs.map(job => {
-          return < Job job={job} key={job._id} />
+          return <JobTile job={job} key={job._id} />
         })
       )}
-      {!jobsState && noJobs()}
-      {/* <Text>You don't currently have any jobs scheduled, view your quotes and schedule a service to book a job.</Text> */}
+      {!jobs && <Text>You don't currently have any jobs scheduled, view your quotes and schedule a service to book a job.</Text>}
     </View>
   )
 }

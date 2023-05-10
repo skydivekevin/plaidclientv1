@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Job = (props) => {
+const JobTile = (props) => {
 
   return (
     <View>
@@ -11,6 +11,6 @@ const Job = (props) => {
   )
 }
 
-export default Job
+export default JobTile
 
 const styles = StyleSheet.create({})
