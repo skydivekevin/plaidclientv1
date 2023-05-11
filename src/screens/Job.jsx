@@ -34,13 +34,13 @@ const Job = ({ route, navigation }) => {
       {data && (
         <>
           {console.log("data: ", data.quotes)}
-          <Text>{data.job.vendorName}</Text>
-          <Text>Total price for job: {data.job.totalPrice}</Text>
-          <Text>Included services: </Text>
+          <Text>Provider: {data.job.vendorName}</Text>
+          <Text>Total price for job: ${data.job.totalPrice}</Text>
+          <Text style={styles.includedServicesTitle}>Included services: </Text>
           {data.quotes.map(quote => {
             return (
-              <View key={quote._id}>
-                <Text>{quote.description} for {quote.price}</Text>
+              <View style={styles.includedServices} key={quote._id}>
+                <Text>{quote.description} for ${quote.price}</Text>
               </View>
             )
           })}
@@ -52,7 +52,14 @@ const Job = ({ route, navigation }) => {
 
 export default Job
 
-const styles = StyleSheet.create({})
-
-// const CompanyQuotes = ({ route, navigation }) => {
-//   const vendorId = route.params.vendorId
+const styles = StyleSheet.create({
+  includedServices: {
+    // margin: 10,
+    borderTop: 1,
+    borderTopWidth: 1,
+    padding: 10
+  },
+  includedServicesTitle: {
+    marginBottom: 10
+  }
+})
