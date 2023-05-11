@@ -5,6 +5,7 @@ import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
 import CartContext from '../../context/CartContext';
 import JobsContext from '../../context/JobsContext';
+import UserContext from '../../context/UserContext';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -16,6 +17,7 @@ const CompanyQuotes = ({ route, navigation }) => {
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
   const { cart, setCart } = useContext(CartContext);
   const { jobs, setJobs } = useContext(JobsContext);
+  const { user, setUser } = useContext(UserContext)
 
   const [quotes, setQuotes] = useState([]);
   const [cartTotal, setCartTotal] = useState();
@@ -78,10 +80,8 @@ const CompanyQuotes = ({ route, navigation }) => {
   function checkout() {
     let data = []
     cart.map(item => {
-      // console.log("item: ", item)
       data.push(item._id)
     })
-    // console.log("dataasdf: ", data)
     postInfoToVendor(data)
   }
 
@@ -92,7 +92,6 @@ const CompanyQuotes = ({ route, navigation }) => {
       data
     })
       .then((res) => {
-        console.log("resasf: ", res.data)
         setUser(res.data)
       })
       .catch((err) => {

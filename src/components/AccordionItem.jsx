@@ -42,7 +42,6 @@ const AccordionItem = (props) => {
       companyName: vendor.companyName,
       website: vendor.website
     })
-
   }
 
   return (

@@ -13,7 +13,7 @@ const baseUrl = 'http://localhost:8080/api';
 export default function MyJobs() {
 
   const { jobs, setJobs } = useContext(JobsContext)
-  const { user, setUser } = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
   const [jobsState, setJobsState] = useState([])
 
@@ -28,7 +28,6 @@ export default function MyJobs() {
       url: `${baseUrl}/jobs/homeownerJobs`,
     })
       .then((res) => {
-        // console.log("res: ", res.data)
         setJobs(res.data)
       })
       .catch((err) => {
@@ -39,24 +38,30 @@ export default function MyJobs() {
   }
 
   function noJobs() {
-    console.log("noJobs")
-    return (<Text>No jobs loser</Text>)
+    return <Text>You don't currently have any jobs scheduled, view your quotes and schedule a service to book a job.</Text>
   }
 
   function renderJobs() {
-    jobs.map(job => {
-      <JobTile job={job} key={job._id} />
-    })
+    return (
+      <>
+        <Text>Jobs Summary</Text>
+        <Text>Click on a job to see more details</Text>
+
+        {jobs.map(job => {
+          return <JobTile job={job} key={job._id} />
+        })}
+
+      </>
+    )
   }
 
   return (
     <View style={styles.container}>
-      {jobs && (
-        jobs.map(job => {
-          return <JobTile job={job} key={job._id} />
-        })
-      )}
-      {!jobs && <Text>You don't currently have any jobs scheduled, view your quotes and schedule a service to book a job.</Text>}
+      {jobs.length > 0 ?
+        renderJobs()
+        :
+        noJobs()
+      }
     </View>
   )
 }

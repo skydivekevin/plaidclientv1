@@ -7,6 +7,7 @@ import CreateAccount from '../src/screens/CreateAccount';
 import ClaimProperty from '../src/screens/ClaimProperty';
 import LearnMore from '../src/screens/LearnMore';
 import CompanyQuotes from '../src/screens/CompanyQuotes';
+import Job from '../src/screens/Job';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,13 @@ function StackNavigator() {
         <Stack.Screen
           name='Company Quotes'
           component={CompanyQuotes}
+          options={{
+            headerBackVisible: true
+          }}
+        />
+        <Stack.Screen
+          name='Job'
+          component={Job}
           options={{
             headerBackVisible: true
           }}
