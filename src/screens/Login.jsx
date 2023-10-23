@@ -17,7 +17,7 @@ export default function Login() {
 
   useEffect(() => {
     evaluateAndRedirect()
-  },[token])
+  }, [token])
 
   const evaluateAndRedirect = () => {
     if (token) {
@@ -32,23 +32,27 @@ export default function Login() {
     const password = "Password";
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
 
-      axios({
+
+    
+
+    axios({
       method: 'POST',
       url: `${baseUrl}/auth/login`,
       data: { email, password }
     })
-    .then(res => {
-      const token = res.data.token
-      const user = res.data.user
-      setUser(user)
-      setToken(token)
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log("error: ", error.response)
-        setErrorLoggingIn(true);
-      }
-    })
+      .then(res => {
+        const token = res.data.token
+        const user = res.data.user
+        setUser(user)
+        setToken(token)
+      })
+      // .then(getPlaces)
+      .catch(function (error) {
+        if (error.response) {
+          console.log("error: ", error.response)
+          setErrorLoggingIn(true);
+        }
+      })
   }
 
   const goToCreateAccount = () => {
@@ -58,44 +62,44 @@ export default function Login() {
   return (
     <View style={styles.appContainer}>
       <View>
-        <Image source={require('../../assets/logo.jpeg')} style={styles.logo}/>
+        <Image source={require('../../assets/logo.jpeg')} style={styles.logo} />
       </View>
       <View style={styles.nameAndPhrase}>
         <Text style={styles.name}>Plaid</Text>
         <Text style={styles.phrase}>Welcome to Plaid!</Text>
       </View>
       <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.textInput} 
+        <TextInput
+          style={styles.textInput}
           placeholder="Email"
           onChangeText={setEmail}
-          />
+        />
       </View>
       <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.textInput} 
+        <TextInput
+          style={styles.textInput}
           placeholder="Password"
           onChangeText={setPassword}
-          /> 
+        />
       </View>
       <View>
         <Text>
-        {errorLoggingIn ? <Text>There was an error logging in</Text> : null } 
+          {errorLoggingIn ? <Text>There was an error logging in</Text> : null}
         </Text>
       </View>
       <View>
-      <Button 
-        title="Login"
-        onPress={() => {
-          handleLogin()
-        }}
-      />
-      <Button 
-      title="Create Account"
-      onPress={() => {
-        goToCreateAccount()
-      }}
-      />
+        <Button
+          title="Login"
+          onPress={() => {
+            handleLogin()
+          }}
+        />
+        <Button
+          title="Create Account"
+          onPress={() => {
+            goToCreateAccount()
+          }}
+        />
       </View>
     </View>
   );

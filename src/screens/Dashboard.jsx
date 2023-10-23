@@ -1,8 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react';
+import { StyleSheet, View } from 'react-native'
+import React, { useEffect, useContext } from 'react';
 import BottomNavbarMain from '../components/BottomNavbarMain';
+import ApiContext from '../../context/ApiContext';
+import { Utils } from '../../utils/httpUtils';
 
 const Dashboard = () => {
+  const { places, setPlaces } = useContext(ApiContext)
+
+  useEffect(() => {
+    if (!places) {
+      Utils.getJson('fetchGoogle')
+        .then(res => setPlaces(res.data.places))
+    }
+  })
 
   return (
     <View style={styles.dashboard}>

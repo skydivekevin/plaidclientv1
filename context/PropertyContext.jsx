@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 
 const PropertyContext = React.createContext();
 
-export const PropertyProvider = (props)=> {
-  const [property, setProperty] = useState()
+export const PropertyProvider = (props) => {
+  const [propertyContext, setPropertyContext] = useState()
+  const [propertyIdContext, setPropertyIdContext] = useState()
 
-  return(
+  return (
     <PropertyContext.Provider value={{
-      property, setProperty
+      propertyContext,
+      setPropertyContext,
+      propertyIdContext,
+      setPropertyIdContext
     }}>
       {props.children}
     </PropertyContext.Provider>

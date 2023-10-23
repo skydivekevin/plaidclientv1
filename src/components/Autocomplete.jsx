@@ -3,8 +3,9 @@ import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 
-import ApiContext, { places } from '../../context/ApiContext';
+import ApiContext from '../../context/ApiContext';
 import PropertyContext from '../../context/PropertyContext';
+import { GoogleAutocomplete, Property } from '../../utils/httpUtils';
 
 const url = "http://localhost:8080/api/properties"
 
@@ -12,8 +13,8 @@ export default function Autocomplete() {
 
   const navigation = useNavigation()
 
-  const { places, setPlaces } = useContext(ApiContext)
-  const { property, setProperty } = useContext(PropertyContext)
+  const { places } = useContext(ApiContext)
+  const { setPropertyContext, setPropertyIdContext } = useContext(PropertyContext)
 
   const [predictions, setPredictions] = useState([])
   const [isShowingPredictions, setIsShowingPredictions] = useState(true)
@@ -29,40 +30,15 @@ export default function Autocomplete() {
     setPlaceDescription();
   }, [isShowingPredictions])
 
-  useEffect(() => {
-    if (!places) {
-      getPlaces()
-    }
-  })
-
-  function getPlaces() {
-
-    axios({
-      method: 'GET',
-      url: `${baseUrl}/utils/fetchGoogle`,
-    })
-      .then(res => {
-        const places = res.data.places
-        setPlaces(places)
-      })
-      .catch(err => console.log("err: ", err))
-  }
-
   searchLocation = async (locationInput) => {
     // Trying to optomize calls to google; currently it only starts reaching out if the user types in at least 5 characters
     if (locationInput.length < 5) {
       return
     }
-    axios({
-      method: 'GET',
-      url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${places}&input=${locationInput}`,
-    })
+    GoogleAutocomplete.getJson(places, locationInput)
       .then((res) => {
         setPredictions(res.data.predictions)
         setIsShowingPredictions(true)
-      })
-      .catch((err) => {
-        console.log("error: ", err)
       })
   }
 
@@ -78,16 +54,17 @@ export default function Autocomplete() {
   function postAddress(location) {
     const address = buildAddress(location)
     if (address) {
-      axios({
-        method: 'POST',
-        url: url,
-        data: address
-      })
-        .then(res => {
-          const property = res.data
-          setProperty(property)
+      Property.postJson('createProperty', address)
+        .then((response) => {
+          if (response.error) {
+            console.error("API Error: ", response.error)
+          }
+          else {
+            setPropertyContext(response.data)
+            console.log("response.data: ", response.data)
+            setPropertyIdContext(response.data._id)
+          }
         })
-        .catch(err => console.log("error: ", err))
     }
   }
 

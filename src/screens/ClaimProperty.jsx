@@ -6,6 +6,7 @@ import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
 import Autocomplete from '../components/Autocomplete';
 import PropertyContext from '../../context/PropertyContext';
+import { Property } from '../../utils/httpUtils';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -14,37 +15,43 @@ const ClaimProperty = () => {
   const navigation = useNavigation();
 
   const { user, setUser } = useContext(UserContext)
-  const { property } = useContext(PropertyContext)
+  const { propertyIdContext, propertyContext } = useContext(PropertyContext)
 
   const [verificationCode, setVerificationCode] = useState("")
 
   function claimProperty() {
-    //axios POST to person, claiming property
     let data;
     if (verificationCode) {
       data = {
-        property: property,
+        propertyId: propertyIdContext,
         verificationCode: verificationCode
       }
     }
     if (!verificationCode) {
       data = {
-        property: property
+        propertyId: propertyIdContext,
       }
     }
-    axios({
-      method: 'POST',
-      url: `${baseUrl}/properties/claim`,
-      data
-    })
-      .then(res => {
-        setUser(res.data)
+    console.log("claimProperty data: ", data)
+    Property.postJson('claimProperty', data)
+      .then(response => {
+        console.log("response.data: ", response.data)
+        setUser(response.data)
+        navigation.navigate("Dashboard")
       })
-      .catch(function (error) {
-        if (error.response) {
-          console.log("error: ", error.response)
-        }
-      })
+    // axios({
+    //   method: 'POST',
+    //   url: `${baseUrl}/properties/claim`,
+    //   data
+    // })
+    //   .then(res => {
+    //     setUser(res.data)
+    //   })
+    //   .catch(function (error) {
+    //     if (error.response) {
+    //       console.log("error: ", error.response)
+    //     }
+    //   })
 
 
     //if successful, navigation.navigate("Dashboard")
