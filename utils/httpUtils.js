@@ -70,5 +70,6 @@ const google = (apiPath) => {
 export const Property = general(`${baseUrl}/properties`);
 export const Utils = general(`${baseUrl}/utils`);
 export const Quote = general(`${baseUrl}/quotes`);
+export const Job = general(`${baseUrl}/jobs`);
 
 export const GoogleAutocomplete = google(`https://maps.googleapis.com/maps/api/place/autocomplete/json?`)

@@ -6,8 +6,7 @@ import QuotesContext from '../../context/QuotesContext';
 import CartContext from '../../context/CartContext';
 import JobsContext from '../../context/JobsContext';
 import UserContext from '../../context/UserContext';
-
-const baseUrl = 'http://localhost:8080/api';
+import { Job } from '../../utils/httpUtils';
 
 const CompanyQuotes = ({ route, navigation }) => {
   const vendorId = route.params.vendorId
@@ -15,12 +14,12 @@ const CompanyQuotes = ({ route, navigation }) => {
   const website = route.params.website
 
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, setCart, setCartTotal } = useContext(CartContext);
   const { jobs, setJobs } = useContext(JobsContext);
   const { user, setUser } = useContext(UserContext)
 
   const [quotes, setQuotes] = useState([]);
-  const [cartTotal, setCartTotal] = useState();
+  // const [cartTotal, setCartTotal] = useState();
   const [checkoutData, setCheckoutData] = useState([]);
 
   useEffect(() => {
@@ -53,6 +52,7 @@ const CompanyQuotes = ({ route, navigation }) => {
   }
 
   function handleSelected(quote, selected) {
+    calculateCart()
     if (selected) {
       setCart([...cart, quote])
     }
@@ -82,25 +82,24 @@ const CompanyQuotes = ({ route, navigation }) => {
     cart.map(item => {
       data.push(item._id)
     })
-    postInfoToVendor(data)
+    requestServices(data)
   }
 
-  function postInfoToVendor(data) {
-    axios({
-      method: 'POST',
-      url: `${baseUrl}/jobs/jobRequest`,
-      data
-    })
-      .then((res) => {
-        setUser(res.data)
-      })
-      .catch((err) => {
-        console.log("error: ", err)
+  function requestServices(data) {
+    Job.postJson('createJob', data)
+      .then(response => {
+        setJobs(response.data)
+        navigation.navigate("My Jobs")
       })
   }
 
   function calculateCart() {
-
+    let total = 0;
+    cart.map(item => {
+      console.log("item: ", item.price)
+      total += item.price
+    })
+    setCartTotal(total)
   }
 
   return (

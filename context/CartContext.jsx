@@ -4,6 +4,7 @@ const CartContext = React.createContext();
 
 export const CartProvider = (props) => {
   const [cart, setCart] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
   function updateCart(quote) {
     if (cart.length === 0) {
@@ -26,7 +27,7 @@ export const CartProvider = (props) => {
 
   return (
     <CartContext.Provider value={{
-      cart, setCart, updateCart
+      cart, setCart, updateCart, cartTotal, setCartTotal
     }}>
       {props.children}
     </CartContext.Provider>

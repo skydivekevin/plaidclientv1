@@ -1,14 +1,10 @@
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, View, Button, TextInput } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
 import Autocomplete from '../components/Autocomplete';
 import PropertyContext from '../../context/PropertyContext';
 import { Property } from '../../utils/httpUtils';
-
-const baseUrl = 'http://localhost:8080/api';
 
 const ClaimProperty = () => {
 

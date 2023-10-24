@@ -24,8 +24,6 @@ export default function Autocomplete() {
   const [location, setLocation] = useState()
   const [verificationCode, setVerificationCode] = useState()
 
-  const baseUrl = 'http://localhost:8080/api';
-
   useEffect(() => {
     setPlaceDescription();
   }, [isShowingPredictions])
@@ -66,23 +64,6 @@ export default function Autocomplete() {
           }
         })
     }
-  }
-
-  function claimProperty() {
-    //axios POST to person, claiming property
-
-
-    //if successful, navigation.navigate("Dashboard")
-
-    //for property claiming, there are two methods:
-    // 1: We send out a mailer to each address with quotes (or maybe even without?) with a code that the user can enter to create an account
-    // 2: A vender does a quote on a house, gets a link to send to the homeowner, which gives the homeowner access to the quotes just from that vendor. The homeowner can purchase the service 
-    // through the provided link, and maybe once they purchase a service (maybe $50 min service? Not sure about that yet...) the homeowner can then register for an account.
-
-    // Another possibility: The vendor sends a link to the homeowner, link requires the homeowner to create a "provisional" account, which gives them a login to access the app etc. but only allows them 
-    // to see quotes from their referring vendor
-
-    // Verification code should be a one time use code, generated when someone wants to claim a property, and is removed from the property when it is used
   }
 
   function buildAddress(location) {

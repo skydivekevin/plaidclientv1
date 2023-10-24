@@ -19,7 +19,6 @@ const Job = ({ route, navigation }) => {
       url: `${baseUrl}/jobs/getJob/${jobId}`,
     })
       .then(res => {
-        console.log("res: ", res.data)
         setData(res.data)
       })
       .catch(error => {
@@ -30,7 +29,6 @@ const Job = ({ route, navigation }) => {
   }
   return (
     <View>
-      {/* {console.log("job: ", data)} */}
       {data && (
         <>
           {console.log("data: ", data.quotes)}
