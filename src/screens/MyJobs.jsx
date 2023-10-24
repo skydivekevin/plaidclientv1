@@ -3,30 +3,18 @@ import React, { useEffect, useContext, useState } from 'react';
 import JobsContext from '../../context/JobsContext';
 import UserContext from '../../context/UserContext';
 import JobTile from "../components/JobTile";
-
-
-
-import axios from 'axios';
-
-const baseUrl = 'http://localhost:8080/api';
+import { Job } from '../../utils/httpUtils';
 
 export default function MyJobs() {
-
   const { jobs, setJobs } = useContext(JobsContext)
   const { user } = useContext(UserContext)
-
-  const [jobsState, setJobsState] = useState([])
 
   useEffect(() => {
     getJobs()
   }, [user])
 
   function getJobs() {
-    console.log("getJobs")
-    axios({
-      method: 'GET',
-      url: `${baseUrl}/jobs/homeownerJobs`,
-    })
+    Job.getJson('homeownerJobs')
       .then((res) => {
         setJobs(res.data)
       })
@@ -50,7 +38,6 @@ export default function MyJobs() {
         {jobs.map(job => {
           return <JobTile job={job} key={job._id} />
         })}
-
       </>
     )
   }

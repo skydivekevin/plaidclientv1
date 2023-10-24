@@ -3,7 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 
 const JobTile = (props) => {
-  console.log("job: ", props.job)
   const navigation = useNavigation()
 
   function navigateToJob() {

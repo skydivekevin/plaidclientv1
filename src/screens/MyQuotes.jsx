@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
-
-import axios from 'axios';
+import { Quote, Utils, Vendor } from '../../utils/httpUtils';
 
 import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
@@ -12,16 +11,12 @@ import ApiContext from '../../context/ApiContext';
 import Accordion from "../components/Accordion";
 import CartContext from '../../context/CartContext';
 
-const baseUrl = 'http://localhost:8080/api';
-
 const MyQuotes = () => {
   const navigation = useNavigation();
-
   const { user } = useContext(UserContext);
   const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
-  const { setPlaces } = useContext(ApiContext);
+  const { places, setPlaces } = useContext(ApiContext);
   const { cart } = useContext(CartContext);
-
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   // const [cart, setCart] = useState([]);
   const [groupedQuotes, setGroupedQuotes] = useState([]);
@@ -33,7 +28,12 @@ const MyQuotes = () => {
   const [noCategories, setNoCategories] = useState();
 
   useEffect(() => {
-    getKeys()
+    if (!places) {
+      if (!places) {
+        Utils.getJson('fetchGoogle')
+          .then(res => setPlaces(res.data.places))
+      }
+    }
     if (user.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
       return
@@ -58,10 +58,8 @@ const MyQuotes = () => {
   function getQuotes() {
     if (user.currentProperties?.length >= 1) {
       setNoAssociatedProperties(false)
-      axios({
-        method: 'GET',
-        url: `${baseUrl}/quotes/getAllUserQuotes`,
-      })
+
+      Quote.getJson('getAllUserQuotes')
         .then(res => {
           setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
           setVerifiedQuotes(res.data.verifiedQuotes)
@@ -77,18 +75,6 @@ const MyQuotes = () => {
     if (user.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
     }
-  }
-
-  function getKeys() {
-    axios({
-      method: 'GET',
-      url: `${baseUrl}/utils/fetchGoogle`,
-    })
-      .then(res => {
-        const places = res.data.places
-        setPlaces(places)
-      })
-      .catch(err => console.log("err: ", err))
   }
 
   function noProperties() {
@@ -156,20 +142,19 @@ const MyQuotes = () => {
         groupedQuotesArr[index]?.quotes.push(quote)
       }
     })
-    console.log("groupedQutoesArr: ", groupedQuotesArr)
     setGroupedQuotes(groupedQuotesArr)
     getVendorInformation(vendorIds)
 
   }
 
   function getVendorInformation(vendorIds) {
-    axios({
-      method: 'POST',
-      url: `${baseUrl}/vendors/getVendorInformation`,
-      data: vendorIds
-    })
-      .then(res => {
-        const vendorInfo = res.data;
+
+    const data = {
+      vendorIds
+    }
+    Vendor.getJson('getVendorInformation', data)
+      .then(response => {
+        const vendorInfo = response.data;
 
         let data = []
         vendorInfo.map(vendor => {
@@ -186,9 +171,7 @@ const MyQuotes = () => {
   function collectCategories() {
     let newCategories = [];
     vendors.map(vendor => {
-      console.log("vendor: ", vendor)
       if (vendor.categories.length === 0) {
-        console.log("no categories")
         setNoCategories(true)
         return
       }
@@ -212,7 +195,6 @@ const MyQuotes = () => {
         })
       }
     })
-    console.log("newCategories: ", newCategories)
     setCategories(newCategories)
   }
 

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Job as JobRoute } from '../../utils/httpUtils';
 
-import axios from 'axios';
-
-const baseUrl = 'http://localhost:8080/api';
 const Job = ({ route, navigation }) => {
   const jobId = route.params.jobId
-
   const [data, setData] = useState()
 
   useEffect(() => {
@@ -14,10 +11,11 @@ const Job = ({ route, navigation }) => {
   }, [])
 
   async function getJob() {
-    axios({
-      method: 'GET',
-      url: `${baseUrl}/jobs/getJob/${jobId}`,
-    })
+    const data = {
+      jobId
+    }
+
+    JobRoute.getJson('getJob', data)
       .then(res => {
         setData(res.data)
       })
@@ -31,7 +29,6 @@ const Job = ({ route, navigation }) => {
     <View>
       {data && (
         <>
-          {console.log("data: ", data.quotes)}
           <Text>Provider: {data.job.vendorName}</Text>
           <Text>Total price for job: ${data.job.totalPrice}</Text>
           <Text style={styles.includedServicesTitle}>Included services: </Text>

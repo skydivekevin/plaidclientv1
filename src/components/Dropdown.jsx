@@ -1,23 +1,8 @@
 import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity, Item, SafeAreaView } from 'react-native';
-import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios'
-import { useNavigation } from '@react-navigation/native';
-
-import ApiContext, { places } from '../../context/ApiContext';
-import PropertyContext from '../../context/PropertyContext';
-
-const url = "http://localhost:8080/api/properties"
+import React from 'react';
 
 export default function Dropdown(props) {
   const { options } = props;
-
-  const navigation = useNavigation()
-
-  const baseUrl = 'http://localhost:8080/api';
-
-  useEffect(() => {
-
-  })
 
   function handleSelected(location) {
     setIsShowingOptions(false)

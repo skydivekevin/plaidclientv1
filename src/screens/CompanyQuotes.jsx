@@ -1,11 +1,9 @@
 import { ScrollView, StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
-import axios from 'axios';
 import Quote from '../components/Quote';
 import QuotesContext from '../../context/QuotesContext';
 import CartContext from '../../context/CartContext';
 import JobsContext from '../../context/JobsContext';
-import UserContext from '../../context/UserContext';
 import { Job } from '../../utils/httpUtils';
 
 const CompanyQuotes = ({ route, navigation }) => {
@@ -13,14 +11,10 @@ const CompanyQuotes = ({ route, navigation }) => {
   const companyName = route.params.companyName
   const website = route.params.website
 
-  const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
+  const { verifiedQuotes } = useContext(QuotesContext);
   const { cart, setCart, setCartTotal } = useContext(CartContext);
-  const { jobs, setJobs } = useContext(JobsContext);
-  const { user, setUser } = useContext(UserContext)
-
+  const { setJobs } = useContext(JobsContext);
   const [quotes, setQuotes] = useState([]);
-  // const [cartTotal, setCartTotal] = useState();
-  const [checkoutData, setCheckoutData] = useState([]);
 
   useEffect(() => {
     renderQuotes()
@@ -96,7 +90,6 @@ const CompanyQuotes = ({ route, navigation }) => {
   function calculateCart() {
     let total = 0;
     cart.map(item => {
-      console.log("item: ", item.price)
       total += item.price
     })
     setCartTotal(total)

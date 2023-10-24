@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity, Item, SafeAreaView } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 
 import ApiContext from '../../context/ApiContext';
@@ -59,7 +58,6 @@ export default function Autocomplete() {
           }
           else {
             setPropertyContext(response.data)
-            console.log("response.data: ", response.data)
             setPropertyIdContext(response.data._id)
           }
         })

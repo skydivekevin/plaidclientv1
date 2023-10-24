@@ -1,18 +1,13 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React from 'react';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-
-const baseUrl = 'http://localhost:8080/api';
+import { Auth } from '../../utils/httpUtils';
 
 const More = () => {
   const navigation = useNavigation();
 
   function handleLogout() {
-    axios({
-      method: 'GET',
-      url: `${baseUrl}/auth/logout`
-    })
+    Auth.getJson('logout')
       .then(res => {
         navigation.navigate("Plaid")
       })
@@ -22,6 +17,7 @@ const More = () => {
         }
       })
   }
+
   return (
     <View>
       <Text>More</Text>
@@ -37,7 +33,6 @@ const More = () => {
           handleLogout()
         }}
       />
-
     </View>
   )
 }

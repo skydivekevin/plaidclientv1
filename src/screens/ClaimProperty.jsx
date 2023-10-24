@@ -7,12 +7,9 @@ import PropertyContext from '../../context/PropertyContext';
 import { Property } from '../../utils/httpUtils';
 
 const ClaimProperty = () => {
-
   const navigation = useNavigation();
-
   const { user, setUser } = useContext(UserContext)
   const { propertyIdContext, propertyContext } = useContext(PropertyContext)
-
   const [verificationCode, setVerificationCode] = useState("")
 
   function claimProperty() {
@@ -28,29 +25,11 @@ const ClaimProperty = () => {
         propertyId: propertyIdContext,
       }
     }
-    console.log("claimProperty data: ", data)
     Property.postJson('claimProperty', data)
       .then(response => {
-        console.log("response.data: ", response.data)
         setUser(response.data)
         navigation.navigate("Dashboard")
       })
-    // axios({
-    //   method: 'POST',
-    //   url: `${baseUrl}/properties/claim`,
-    //   data
-    // })
-    //   .then(res => {
-    //     setUser(res.data)
-    //   })
-    //   .catch(function (error) {
-    //     if (error.response) {
-    //       console.log("error: ", error.response)
-    //     }
-    //   })
-
-
-    //if successful, navigation.navigate("Dashboard")
 
     //for property claiming, there are two methods:
     // 1: We send out a mailer to each address with quotes (or maybe even without?) with a code that the user can enter to create an account

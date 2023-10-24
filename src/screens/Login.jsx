@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import UserContext from '../../context/UserContext';
-
-const baseUrl = 'http://localhost:8080/api'
+import { Auth } from '../../utils/httpUtils';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -12,7 +10,6 @@ export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [errorLoggingIn, setErrorLoggingIn] = useState(null)
-
   const { token, setToken, setUser } = useContext(UserContext)
 
   useEffect(() => {
@@ -26,27 +23,28 @@ export default function Login() {
   }
 
   const handleLogin = () => {
-
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
     const email = "Kevin.com";
     const password = "Password";
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
+    const data = {
+      email,
+      password
+    }
 
-
-    
-
-    axios({
-      method: 'POST',
-      url: `${baseUrl}/auth/login`,
-      data: { email, password }
-    })
+    Auth.postJson('login', data)
       .then(res => {
         const token = res.data.token
         const user = res.data.user
         setUser(user)
         setToken(token)
       })
-      // .then(getPlaces)
+      .catch(function (error) {
+        if (error.response) {
+          console.log("error: ", error.response)
+          setErrorLoggingIn(true);
+        }
+      })
       .catch(function (error) {
         if (error.response) {
           console.log("error: ", error.response)
