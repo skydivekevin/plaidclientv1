@@ -33,9 +33,9 @@ export default function Login() {
     }
 
     Auth.postJson('login', data)
-      .then(res => {
-        const token = res.data.token
-        const user = res.data.user
+      .then(response => {
+        const token = response.data.token
+        const user = response.data.user
         setUser(user)
         setToken(token)
       })

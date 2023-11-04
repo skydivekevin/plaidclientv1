@@ -53,11 +53,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1
+    marginTop: 30
   },
   buttonContainer: {
     marginTop: 25,
-    zIndex: -1
   },
   inputContainer: {
     marginTop: 25,

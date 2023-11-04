@@ -33,8 +33,8 @@ export default function Autocomplete() {
       return
     }
     GoogleAutocomplete.getJson(places, locationInput)
-      .then((res) => {
-        setPredictions(res.data.predictions)
+      .then((response) => {
+        setPredictions(response.data.predictions)
         setIsShowingPredictions(true)
       })
   }

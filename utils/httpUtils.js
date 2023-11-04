@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8080/api";
+//local server
+// const baseUrl = "http://localhost:8080/api";
+
+//prod server
+const baseUrl = "http://18.234.149.45/api";
 
 const errorHandler = (error) => {
   console.error("API Request Error:", error);
@@ -39,7 +43,6 @@ const general = (apiPath) => {
         return errorHandler(error)
       })
     },
-
     deleteJson: (path, data) => {
       return axios.delete(`${apiPath}/${path}`, {params: data})
       .then(response => {
@@ -66,12 +69,11 @@ const google = (apiPath) => {
   }
 }
 
-// export const Vendor = general(`${baseUrl}/vendors`);
-export const Property = general(`${baseUrl}/properties`);
-export const Utils = general(`${baseUrl}/utils`);
-export const Quote = general(`${baseUrl}/quotes`);
-export const Job = general(`${baseUrl}/jobs`);
-export const Vendor = general(`${baseUrl}/vendors`);
 export const Auth = general(`${baseUrl}/auth`);
+export const Job = general(`${baseUrl}/jobs`);
+export const Property = general(`${baseUrl}/properties`);
+export const Quote = general(`${baseUrl}/quotes`);
+export const Utils = general(`${baseUrl}/utils`);
+export const Vendor = general(`${baseUrl}/vendors`);
 
 export const GoogleAutocomplete = google(`https://maps.googleapis.com/maps/api/place/autocomplete/json?`)

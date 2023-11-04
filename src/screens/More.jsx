@@ -20,7 +20,6 @@ const More = () => {
 
   return (
     <View>
-      <Text>More</Text>
       <Button
         title="Add property"
         onPress={() => {

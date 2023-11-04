@@ -10,7 +10,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!places) {
       Utils.getJson('fetchGoogle')
-        .then(res => setPlaces(res.data.places))
+        .then(response => setPlaces(response.data.places))
     }
   })
 

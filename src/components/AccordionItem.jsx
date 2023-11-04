@@ -85,7 +85,9 @@ const styles = StyleSheet.create({
     marginBottom: '2%',
     fontWeight: 'bold',
     overflow: 'hidden',
-    borderColor: 'gray',
+    // borderColor: '#ff5a41',
+    borderColor: '#eb642a',
+    // borderColor: 'gray',
     borderWidth: 1.5
   },
   title: {
@@ -107,7 +109,9 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'left',
     borderWidth: 1,
-    borderRadius: 5,
+    // borderColor: '#ff5a41',
+    borderColor: 'gray',
+    borderRadius: 10,
     marginBottom: 10,
     padding: 10,
     width: '100%',

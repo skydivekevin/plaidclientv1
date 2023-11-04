@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 
-export default function MyAccount({navigation}) {
+export default function MyAccount({ navigation }) {
   return (
     <View>
       <Text>MyAccount</Text>

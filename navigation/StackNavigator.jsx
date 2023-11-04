@@ -67,7 +67,6 @@ function StackNavigator() {
             headerBackVisible: true
           }}
         />
-
       </Stack.Group>
     </Stack.Navigator>
   )

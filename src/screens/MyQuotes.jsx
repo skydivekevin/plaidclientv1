@@ -18,7 +18,6 @@ const MyQuotes = () => {
   const { places, setPlaces } = useContext(ApiContext);
   const { cart } = useContext(CartContext);
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
-  // const [cart, setCart] = useState([]);
   const [groupedQuotes, setGroupedQuotes] = useState([]);
   // const [verifiedQuotes, setVerifiedQuotes] = useState([]);
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
@@ -31,7 +30,7 @@ const MyQuotes = () => {
     if (!places) {
       if (!places) {
         Utils.getJson('fetchGoogle')
-          .then(res => setPlaces(res.data.places))
+          .then(response => setPlaces(response.data.places))
       }
     }
     if (user.currentProperties?.length === 0) {
@@ -60,9 +59,9 @@ const MyQuotes = () => {
       setNoAssociatedProperties(false)
 
       Quote.getJson('getAllUserQuotes')
-        .then(res => {
-          setUnverifiedQuotesCount(res.data.unverifiedQuotesCount)
-          setVerifiedQuotes(res.data.verifiedQuotes)
+        .then(response => {
+          setUnverifiedQuotesCount(response.data.unverifiedQuotesCount)
+          setVerifiedQuotes(response.data.verifiedQuotes)
         })
         .catch(function (error) {
           if (error.response) {
@@ -113,7 +112,6 @@ const MyQuotes = () => {
   //   }
   // }
 
-  ///////CART IS WORKING; NEXT ORDER OF BUSINESS IS GOING TO BE CATEGORIZING/ORGANIZING THESE QUOTES INTO THE BASIC CATEGORIES OF 'interior services', 'exterior services', 'electrical', 'plumbing'
   function groupQuotesByVendor() {
 
     // should look like: {vendor1: [{quote1}, {quote2}], vendor2: [{quote1}]}
@@ -249,16 +247,13 @@ const MyQuotes = () => {
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {verifiedQuotes.length > 0 ?
+      {verifiedQuotes?.length > 0 ?
         quotesAndVendorsByCategory.map(category => {
           return <Accordion data={category} key={category.category} />
         })
         :
         renderNoQuotes()
       }
-
-
-
 
       {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}

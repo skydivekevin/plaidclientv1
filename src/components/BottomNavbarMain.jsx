@@ -9,13 +9,18 @@ const Tab = createBottomTabNavigator();
 
 export default function BottomNavbarMain() {
 
-    return (
-      <Tab.Navigator>
-        <Tab.Screen name="My Quotes" component={MyQuotes}/>
-        <Tab.Screen name="My Jobs" component={MyJobs} />
-        <Tab.Screen name="Request Quote" component={RequestQuote} />
-        <Tab.Screen name="More" component={More} />
-      </Tab.Navigator>
-    );
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerMode: 'screen',
+        headerTintColor: 'white',
+        headerStyle: { backgroundColor: 'tomato' },
+      }}>
+      <Tab.Screen name="My Quotes" component={MyQuotes} />
+      <Tab.Screen name="My Jobs" component={MyJobs} />
+      <Tab.Screen name="Request Quote" component={RequestQuote} />
+      <Tab.Screen name="More" component={More} />
+    </Tab.Navigator>
+  );
 }
 

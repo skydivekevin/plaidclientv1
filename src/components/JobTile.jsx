@@ -17,7 +17,7 @@ const JobTile = (props) => {
   }
 
   return (
-    <TouchableOpacity onPress={navigateToJob}>
+    <TouchableOpacity onPress={navigateToJob} style={styles.jobButton}>
       <View style={styles.jobTile}>
         <Text>{props.job.vendorName} for ${props.job.totalPrice}</Text>
         {/* <Text>Job Price: {props.job.totalPrice}</Text> */}
@@ -35,6 +35,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     padding: 10,
-    margin: 10
+    margin: 10,
+  },
+  jobButton: {
+    width: '80%',
   }
 })
