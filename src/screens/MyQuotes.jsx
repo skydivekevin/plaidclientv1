@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { useNavigation } from '@react-navigation/native';
 import { Quote, Utils, Vendor } from '../../utils/httpUtils';
@@ -33,12 +34,28 @@ const MyQuotes = () => {
           .then(response => setPlaces(response.data.places))
       }
     }
-    if (user.currentProperties?.length === 0) {
+
+    if (user?.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
       return
     }
     getQuotes()
   }, [user])
+
+  // useFocusEffect(() => {
+  //   if (!places) {
+  //     if (!places) {
+  //       Utils.getJson('fetchGoogle')
+  //         .then(response => setPlaces(response.data.places))
+  //     }
+  //   }
+
+  //   if (user?.currentProperties?.length === 0) {
+  //     setNoAssociatedProperties(true)
+  //     return
+  //   }
+  //   getQuotes()
+  // })
 
   useEffect(() => {
     if (verifiedQuotes) {
@@ -55,7 +72,7 @@ const MyQuotes = () => {
   }, [categories])
 
   function getQuotes() {
-    if (user.currentProperties?.length >= 1) {
+    if (user?.currentProperties?.length >= 1) {
       setNoAssociatedProperties(false)
 
       Quote.getJson('getAllUserQuotes')
@@ -79,7 +96,7 @@ const MyQuotes = () => {
   function noProperties() {
     return (
       <View>
-        <Text>You don't have any associated properties to manage, add one by clicking below or learn more about Plaid.</Text>
+        <Text style={styles.noProperties}>You don't have any associated properties to manage, add one by clicking below or learn more about Plaid.</Text>
         <Button
           title="Add property"
           onPress={() => {
@@ -146,7 +163,6 @@ const MyQuotes = () => {
   }
 
   function getVendorInformation(vendorIds) {
-
     const data = {
       vendorIds
     }
@@ -216,7 +232,7 @@ const MyQuotes = () => {
   function renderMoreQuotesNotification() {
     return (
       <View style={styles.renderMoreQuotesNotification}>
-        <Text>
+        <Text style={styles.moreQuotes}>
           There are more quotes available on your property. Verify property to see them and add more!
         </Text>
         <Button
@@ -228,11 +244,13 @@ const MyQuotes = () => {
       </View>
     )
   }
+  //kevin
 
   function renderNoQuotes() {
     return (
-      <Text>There aren't any current quotes on your property. Request a quote from your favorite contractor here.</Text>
-    )
+      user?.currentProperties?.length > 0 && unverifiedQuotesCount === 0 ? (
+        <View style={styles.noQuotes}><Text style={styles.noQuotes}> There aren't any current quotes on your property. Request a quote from your favorite contractor here.</Text></View>
+      ) : null)
   }
 
   // function renderAccordions() {
@@ -247,13 +265,15 @@ const MyQuotes = () => {
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      {verifiedQuotes?.length > 0 ?
-        quotesAndVendorsByCategory.map(category => {
-          return <Accordion data={category} key={category.category} />
-        })
-        :
-        renderNoQuotes()
-      }
+      <View style={styles.accordion} >
+        {verifiedQuotes?.length > 0 ?
+          quotesAndVendorsByCategory.map(category => {
+            return <Accordion data={category} key={category.category} />
+          })
+          :
+          renderNoQuotes()
+        }
+      </View>
 
       {noAssociatedProperties ? noProperties() : null}
       {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
@@ -271,13 +291,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 10,
     height: '100%',
-    backgroundColor: '#f0f0f0'
+    backgroundColor: '#f0f0f0',
+    marginLeft: 20,
+    marginRight: 20
   },
   renderQuotesContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   renderMoreQuotesNotification: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  noQuotes: {
+    marginTop: 20,
+    // marginLeft: 20,
+    // marginRight: 20,
+  },
+  noProperties: {
+    marginTop: 30,
+    marginBottom: 30,
+    // marginLeft: 20,
+    // marginRight: 20,
+  },
+  accordion: {
+    paddingTop: 30
+  },
+  moreQuotes: {
+    textAlign: 'center',
   }
 })

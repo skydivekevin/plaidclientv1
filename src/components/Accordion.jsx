@@ -15,8 +15,5 @@ export default Accordion;
 const styles = StyleSheet.create({
   container: {
     paddingVertical: '2%',
-    paddingHorizontal: '3%',
-    // backgroundColor: "red",
-    width: '100%',
   }
 });

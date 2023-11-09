@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   body: {
-    paddingBorizontal: '2%',
+    paddingHorizontal: '2%',
     paddingVertical: '3%',
   },
   titleContainer: {

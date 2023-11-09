@@ -11,6 +11,7 @@ const ClaimProperty = () => {
   const { user, setUser } = useContext(UserContext)
   const { propertyIdContext, propertyContext } = useContext(PropertyContext)
   const [verificationCode, setVerificationCode] = useState("")
+  console.log("user: ", user)
 
   function claimProperty() {
     let data;
@@ -28,6 +29,7 @@ const ClaimProperty = () => {
     Property.postJson('claimProperty', data)
       .then(response => {
         setUser(response.data)
+        console.log("setUser: ", user)
         navigation.navigate("Dashboard")
       })
 
@@ -45,7 +47,9 @@ const ClaimProperty = () => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.autocomplete}>
+        {/* {user.currentProperties.length === 0 && <Autocomplete />} */}
         <Autocomplete />
+
       </View>
       <View style={styles.verificationTextBox}>
         <TextInput

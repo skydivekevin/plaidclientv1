@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Auth } from '../../utils/httpUtils';
+import UserContext from '../../context/UserContext';
 
 const More = () => {
+  const { user } = useContext(UserContext);
   const navigation = useNavigation();
 
   function handleLogout() {
@@ -20,12 +22,14 @@ const More = () => {
 
   return (
     <View>
-      <Button
-        title="Add property"
-        onPress={() => {
-          navigation.navigate("Claim Property")
-        }}
-      />
+      {user?.currentProperties?.length === 0 &&
+        <Button
+          title="Add property"
+          onPress={() => {
+            navigation.navigate("Claim Property")
+          }}
+        />
+      }
       <Button
         title="Logout"
         onPress={() => {

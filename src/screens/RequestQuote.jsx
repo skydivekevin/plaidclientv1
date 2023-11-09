@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginTop: 25,
-
   },
   autocomplete: {
     marginTop: 25
