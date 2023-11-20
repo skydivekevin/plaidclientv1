@@ -26,8 +26,8 @@ export default function Login() {
 
   const handleLogin = () => {
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
-    // const email = "Kevin.com";
-    // const password = "Password";
+    const email = "Kevin.com";
+    const password = "Password";
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
     const data = {
       email,

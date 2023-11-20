@@ -1,14 +1,10 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-
 import { useNavigation } from '@react-navigation/native';
 import { Quote, Utils, Vendor } from '../../utils/httpUtils';
-
 import QuotesContext from '../../context/QuotesContext';
 import UserContext from '../../context/UserContext';
 import ApiContext from '../../context/ApiContext';
-
 import Accordion from "../components/Accordion";
 import CartContext from '../../context/CartContext';
 
@@ -20,11 +16,9 @@ const MyQuotes = () => {
   const { cart } = useContext(CartContext);
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
   const [groupedQuotes, setGroupedQuotes] = useState([]);
-  // const [verifiedQuotes, setVerifiedQuotes] = useState([]);
   const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [vendorsByCategory, setVendorsByCategory] = useState([]);
   const [noCategories, setNoCategories] = useState();
 
   useEffect(() => {

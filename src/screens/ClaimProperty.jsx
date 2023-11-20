@@ -1,5 +1,5 @@
 import { StyleSheet, View, Button, TextInput } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import UserContext from '../../context/UserContext';
 import Autocomplete from '../components/Autocomplete';
@@ -10,8 +10,7 @@ const ClaimProperty = () => {
   const navigation = useNavigation();
   const { user, setUser } = useContext(UserContext)
   const { propertyIdContext, propertyContext } = useContext(PropertyContext)
-  const [verificationCode, setVerificationCode] = useState("")
-  console.log("user: ", user)
+  const [verificationCode, setVerificationCode] = useState()
 
   function claimProperty() {
     let data;
@@ -29,7 +28,6 @@ const ClaimProperty = () => {
     Property.postJson('claimProperty', data)
       .then(response => {
         setUser(response.data)
-        console.log("setUser: ", user)
         navigation.navigate("Dashboard")
       })
 
@@ -47,7 +45,6 @@ const ClaimProperty = () => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.autocomplete}>
-        {/* {user.currentProperties.length === 0 && <Autocomplete />} */}
         <Autocomplete />
 
       </View>
