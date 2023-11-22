@@ -1,10 +1,10 @@
 import axios from "axios";
 
 //local server
-// const baseUrl = "http://localhost:8080/api";
+const baseUrl = "http://localhost:8080/api";
 
 //prod server
-const baseUrl = "http://18.234.149.45/api";
+// const baseUrl = "http://18.234.149.45/api";
 
 const errorHandler = (error) => {
   console.error("API Request Error:", error);

@@ -36,21 +36,6 @@ const MyQuotes = () => {
     getQuotes()
   }, [user])
 
-  // useFocusEffect(() => {
-  //   if (!places) {
-  //     if (!places) {
-  //       Utils.getJson('fetchGoogle')
-  //         .then(response => setPlaces(response.data.places))
-  //     }
-  //   }
-
-  //   if (user?.currentProperties?.length === 0) {
-  //     setNoAssociatedProperties(true)
-  //     return
-  //   }
-  //   getQuotes()
-  // })
-
   useEffect(() => {
     if (verifiedQuotes) {
       groupQuotesByVendor();
@@ -82,7 +67,7 @@ const MyQuotes = () => {
           }
         })
     }
-    if (user.currentProperties?.length === 0) {
+    if (user?.currentProperties?.length === 0) {
       setNoAssociatedProperties(true)
     }
   }
@@ -243,7 +228,7 @@ const MyQuotes = () => {
   function renderNoQuotes() {
     return (
       user?.currentProperties?.length > 0 && unverifiedQuotesCount === 0 ? (
-        <View style={styles.noQuotes}><Text style={styles.noQuotes}> There aren't any current quotes on your property. Request a quote from your favorite contractor here.</Text></View>
+        <View style={styles.noQuotes}><Text style={styles.noQuotes}> There aren't any current quotes on your property. Search for an easy, no call quote from the provider of your choice here.</Text></View>
       ) : null)
   }
 
@@ -259,7 +244,33 @@ const MyQuotes = () => {
   return (
     <View style={styles.container}>
       <Text>cart: {cart.length}</Text>
-      <View style={styles.accordion} >
+      {/* {console.log("user: ", user)} */}
+      {/* No properties of any kind */}
+      {user?.currentProperties.length === 0 ? (
+        <View>
+          <Text>You aren't currently registered at your address, but it's easy to do!</Text>
+          <Button
+          title="Register Address"
+          onPress={() => {
+            navigation.navigate("Claim Property");
+          }}
+        />
+        </View>
+      ) : null}
+
+      {user?.currentProperties.length !== 0 && user?.currentProperties[0].verified === false ? (
+        <View>
+          <Text>You have an unverified Property</Text>
+          {}
+          {unverifiedQuotesCount !== 0 && (
+            <Text>You have available quotes on your home, verify your address to see them.</Text>
+          )}
+          
+        </View>
+      ) : (
+        null
+      )}
+      {/* <View style={styles.accordion} >
         {verifiedQuotes?.length > 0 ?
           quotesAndVendorsByCategory.map(category => {
             return <Accordion data={category} key={category.category} />
@@ -267,10 +278,10 @@ const MyQuotes = () => {
           :
           renderNoQuotes()
         }
-      </View>
+      </View> */}
 
-      {noAssociatedProperties ? noProperties() : null}
-      {unverifiedQuotesCount ? renderMoreQuotesNotification() : null}
+      {/* {noAssociatedProperties ? noProperties() : null}
+      {unverifiedQuotesCount ? renderMoreQuotesNotification() : null} */}
       {/* {unverifiedQuotesCount ? renderMoreQuotesNotification() : null} */}
       {/* {verifiedQuotes ? renderQuotes() : null} */}
     </View>

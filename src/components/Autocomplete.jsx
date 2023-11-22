@@ -72,6 +72,7 @@ export default function Autocomplete() {
       city: location.terms[2].value,
       state: location.terms[3].value,
       country: location.terms[4].value,
+      placeId: location.place_id
     }
   }
 

@@ -21,7 +21,7 @@ const CreateAccount = () => {
       password,
       email,
       phoneNumber,
-      role: 'homeowner'
+      role: 'HOMEOWNER'
     }
 
     Auth.postJson('register', data)
