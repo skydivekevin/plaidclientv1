@@ -2,108 +2,82 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import UserContext from '../../context/UserContext';
+import { services } from '../../utils/enums';
+import { mapEnumToSpecialist } from '../../utils/utils';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const RequestQuote = () => {
-
   const [email, setEmail] = useState();
   const [description, setDescription] = useState();
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
+  const [selectedService, setSelectedService] = useState('');
+  const [servicesList, setServicesList] = useState(services);
+  const [open, setOpen] = useState(false);
 
-  function sendRequest() {
-  }
+  const getVendorsInRadius = () => {
+    // Your logic here
+  };
+
+  const doSomething = (something) => {
+    console.log("something: ", something);
+  };
+
   return (
     <View style={styles.container}>
       {!user?.currentProperties[0].verified ? (
         <View>
           <Text style={styles.noQuotes}>You must be verified at your address to request quotes. Don't worry, it's super easy to do!</Text>
           <Button
-          title="Register Address"
-          onPress={() => {
-            navigation.navigate("Claim Property");
-          }}
-        />
+            title="Register Address"
+            onPress={() => {
+              navigation.navigate("Claim Property");
+            }}
+          />
         </View>
       ) : (
-        <View>
-          {console.log("user: ", user)}
-          <Text>Find your provider</Text>
+        <View style={styles.pickerContainer}>
+          <Text style={styles.label}>Find a </Text>
+          <DropDownPicker
+            open={open}
+            items={servicesList.map(service => ({ label: mapEnumToSpecialist(service), value: service }))}
+            setOpen={setOpen}
+            value={selectedService}
+            placeholder="Select a service"
+            containerStyle={{ height: 40, width: 200 }}
+            style={{ backgroundColor: '#fafafa' }}
+            itemStyle={{ justifyContent: 'flex-start' }}
+            dropDownStyle={{ backgroundColor: '#fafafa' }}
+            setValue={setSelectedService}
+          />
         </View>
       )}
-      {/* <Text>Want a quote from your favorite provider? Enter their email address and a short description of the service you need below, and they'll receive a request to apply quotes to your property.</Text> */}
-
-      {/* <View>
-        <TextInput
-          placeholder="Enter vendors email address"
-          placeholderTextColor="#000"
-          autoCapitalize='none'
-          style={styles.verificationCode}
-          onChangeText={(text) => setEmail(text)}
-          clearButtonMode="while-editing"
-        />
-      </View>
-      <View>
-        <TextInput
-          placeholder="Service description"
-          placeholderTextColor="#000"
-          autoCapitalize='none'
-          style={styles.verificationCode}
-          onChangeText={(text) => setDescription(text)}
-          clearButtonMode="while-editing"
-        />
-      </View> */}
-
-
-      {/* <View style={styles.buttonContainer}>
-        <Button
-          title="Request Quotes"
-          onPress={sendRequest}
-        />
-      </View> */}
     </View>
+  );
+};
 
-  )
-}
-
-export default RequestQuote
-
-const styles = StyleSheet.create({
+const styles = {
   container: {
     paddingHorizontal: 16,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 30,
   },
-  buttonContainer: {
-    marginTop: 25,
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  inputContainer: {
-    marginTop: 25,
-  },
-  autocomplete: {
-    marginTop: 25
-  },
-  verificationCode: {
-    marginTop: 25,
-    width: 340,
-    height: 50,
+  label: {
     fontSize: 18,
-    borderRadius: 8,
-    borderColor: '#aaa',
-    color: '#000',
-    backgroundColor: '#fff',
-    borderWidth: 1.5,
-    paddingLeft: 15,
-  },
-  verificationTextBox: {
-    zIndex: -1
+    marginRight: 10,
   },
   noQuotes: {
     marginTop: 15,
     marginBottom: 15,
     fontSize: 18,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
+};
 
-})
+export default RequestQuote;
