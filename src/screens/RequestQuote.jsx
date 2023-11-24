@@ -6,6 +6,7 @@ import { services } from '../../utils/enums';
 import { mapEnumToSpecialist } from '../../utils/utils';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Vendor } from '../../utils/httpUtils';
+import VendorTile from '../components/VendorTile';
 
 const RequestQuote = () => {
   const [email, setEmail] = useState();
@@ -71,7 +72,7 @@ const RequestQuote = () => {
           {vendors.length > 0 ? (
             vendors.map(vendor => {
               return (
-                <Text>Vendor: {vendor.companyName}</Text>
+                <VendorTile vendor={vendor} key={vendor._id} />
               )
             })
           ) : null}
