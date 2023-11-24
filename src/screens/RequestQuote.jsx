@@ -5,6 +5,7 @@ import UserContext from '../../context/UserContext';
 import { services } from '../../utils/enums';
 import { mapEnumToSpecialist } from '../../utils/utils';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Vendor } from '../../utils/httpUtils';
 
 const RequestQuote = () => {
   const [email, setEmail] = useState();
@@ -14,13 +15,21 @@ const RequestQuote = () => {
   const [selectedService, setSelectedService] = useState('');
   const [servicesList, setServicesList] = useState(services);
   const [open, setOpen] = useState(false);
+  const [vendors, setVendors] = useState([]);
 
   const getVendorsInRadius = () => {
     // Your logic here
+    const data = {
+      service: selectedService
+    }
+    Vendor.postJson('findInRadiusVendors', data)
+    .then(response => {
+      setVendors(response.data)
+    })
   };
 
-  const doSomething = (something) => {
-    console.log("something: ", something);
+  const getList = () => {
+    console.log("something: ", selectedService);
   };
 
   return (
@@ -52,6 +61,21 @@ const RequestQuote = () => {
           />
         </View>
       )}
+      <View style={styles.button}>
+      <Button
+            title="Find 'em"
+            onPress={() => {
+              getVendorsInRadius();
+            }}
+          />
+          {vendors.length > 0 ? (
+            vendors.map(vendor => {
+              return (
+                <Text>Vendor: {vendor.companyName}</Text>
+              )
+            })
+          ) : null}
+      </View>
     </View>
   );
 };
@@ -78,6 +102,10 @@ const styles = {
     fontSize: 18,
     textAlign: 'center',
   },
+  button: {
+    paddingTop: 20,
+    zIndex: -1
+  }
 };
 
 export default RequestQuote;
