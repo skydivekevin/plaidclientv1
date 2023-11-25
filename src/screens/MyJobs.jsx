@@ -9,7 +9,6 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function MyJobs() {
   const { jobs, setJobs } = useContext(JobsContext)
   const { user } = useContext(UserContext)
-  // console.log("jobs: ", jobs)
   const [requestedJobs, setRequestedJobs] = useState([])
   const [acceptedJobs, setAcceptedJobs] = useState([])
   const [completedJobs, setCompletedJobs] = useState([])
@@ -38,9 +37,9 @@ export default function MyJobs() {
   }
 
   function aggregateJobs(jobsData) {
-    const requested = jobsData.filter((job) => job.jobStatus === "requested");
-    const accepted = jobsData.filter((job) => job.jobStatus === "accepted");
-    const completed = jobsData.filter((job) => job.jobStatus === "completed");
+    const requested = jobsData.filter((job) => job.jobStatus === "REQUESTED");
+    const accepted = jobsData.filter((job) => job.jobStatus === "ACCEPTED");
+    const completed = jobsData.filter((job) => job.jobStatus === "COMPLETED");
 
     setRequestedJobs(requested);
     setAcceptedJobs(accepted);

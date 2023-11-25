@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Quote, Utils, Vendor } from '../../utils/httpUtils';
@@ -7,19 +7,26 @@ import UserContext from '../../context/UserContext';
 import ApiContext from '../../context/ApiContext';
 import Accordion from "../components/Accordion";
 import CartContext from '../../context/CartContext';
+import DropDownPicker from 'react-native-dropdown-picker';
+import VendorTile from '../components/VendorTile';
+import { mapEnumToSpecialist } from '../../utils/utils';
+import { servicesMyQuotes } from '../../utils/enums';
 
 const MyQuotes = () => {
   const navigation = useNavigation();
   const { user } = useContext(UserContext);
-  const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, setVerifiedQuotes } = useContext(QuotesContext);
+  const { quotesAndVendorsByCategory, setquotesAndVendorsByCategory, verifiedQuotes, quotesByVendor, setQuotesByVendor  } = useContext(QuotesContext);
   const { places, setPlaces } = useContext(ApiContext);
   const { cart } = useContext(CartContext);
   const [noAssociatedProperties, setNoAssociatedProperties] = useState();
-  const [groupedQuotes, setGroupedQuotes] = useState([]);
-  const [unverifiedQuotesCount, setUnverifiedQuotesCount] = useState();
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
   const [noCategories, setNoCategories] = useState();
+  const [moreQuotesAvailable, setMoreQuotesAvailable] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
+  const [servicesList, setServicesList] = useState(servicesMyQuotes);
+  const [selectedVendors, setSelectedVendors] = useState(quotesByVendor)
 
   useEffect(() => {
     if (!places) {
@@ -37,18 +44,23 @@ const MyQuotes = () => {
   }, [user])
 
   useEffect(() => {
-    if (verifiedQuotes) {
-      groupQuotesByVendor();
+    filterSelectedServices()
+  }, [selectedService])
+
+  const filterSelectedServices = () => {
+    console.log("quotes by vendor: ", quotesByVendor);
+    if (selectedService === "All") {
+      console.log("all");
+      setSelectedVendors([...quotesByVendor]); // Copy the quotesByVendor array
+    } else {
+      console.log("else");
+      const filteredVendors = quotesByVendor.filter(vendor =>
+        vendor.services.includes(selectedService)
+      );
+      setSelectedVendors([...filteredVendors]); // Copy the filteredVendors array
+      console.log("selectedVendors: ", selectedVendors);
     }
-  }, [verifiedQuotes])
-
-  useEffect(() => {
-    collectCategories();
-  }, [vendors])
-
-  useEffect(() => {
-    groupVendorsByCategory()
-  }, [categories])
+  };
 
   function getQuotes() {
     if (user?.currentProperties?.length >= 1) {
@@ -56,8 +68,8 @@ const MyQuotes = () => {
 
       Quote.getJson('getAllUserQuotes')
         .then(response => {
-          setUnverifiedQuotesCount(response.data.unverifiedQuotesCount)
-          setVerifiedQuotes(response.data.verifiedQuotes)
+          setMoreQuotesAvailable(response.data.moreQuotesAvailable);
+          setQuotesByVendor(response.data.quotes);
         })
         .catch(function (error) {
           if (error.response) {
@@ -107,59 +119,6 @@ const MyQuotes = () => {
   //     })
   //   }
   // }
-
-  function groupQuotesByVendor() {
-
-    // should look like: {vendor1: [{quote1}, {quote2}], vendor2: [{quote1}]}
-    // setGroupedQuotes( [{category: exterior, vendors: [vendor1, vendor2, vendor3], quotes: [quote1, quote2, quote3]}, {category: interior, vendors: [...], quotes: [] }, {}]
-    // vendor categories: ['interior services', 'exterior services', 'electrical', 'plumbing']
-    let categories = [];
-    let vendorIds = [];
-    let groupedQuotesArr = [];
-    let quotesByCompany = [];
-    verifiedQuotes?.map(quote => {
-
-      // group quotes by vendor
-      if (!vendorIds.includes(quote.vendorId)) {
-        vendorIds.push(quote.vendorId)
-        const vendor = {
-          vendorId: quote.vendorId,
-          quotes: [
-            quote
-          ]
-        }
-        groupedQuotesArr.push(vendor)
-      }
-
-      if (vendorIds.includes(quote.vendorId)) {
-        const index = groupedQuotesArr.findIndex(vendor => vendor.id === quote.vendorId)
-        groupedQuotesArr[index]?.quotes.push(quote)
-      }
-    })
-    setGroupedQuotes(groupedQuotesArr)
-    getVendorInformation(vendorIds)
-
-  }
-
-  function getVendorInformation(vendorIds) {
-    const data = {
-      vendorIds
-    }
-    Vendor.getJson('getVendorInformation', data)
-      .then(response => {
-        const vendorInfo = response.data;
-
-        let data = []
-        vendorInfo.map(vendor => {
-          const index = groupedQuotes.findIndex(quote => quote.vendorId === vendor._id)
-          const quotes = groupedQuotes[index]?.quotes
-          vendor.quotes = quotes;
-          data.push(vendor)
-          setVendors(data)
-        })
-      })
-      .catch(err => console.log("err: ", err))
-  }
 
   function collectCategories() {
     let newCategories = [];
@@ -223,29 +182,14 @@ const MyQuotes = () => {
       </View>
     )
   }
-  //kevin
 
-  function renderNoQuotes() {
-    return (
-      user?.currentProperties?.length > 0 && unverifiedQuotesCount === 0 ? (
-        <View style={styles.noQuotes}><Text style={styles.noQuotes}> There aren't any current quotes on your property. Search for an easy, no call quote from the provider of your choice here.</Text></View>
-      ) : null)
+  const goToVendorQuotes = (vendor) => {
+    navigation.navigate('Company Quotes', vendor)
   }
-
-  // function renderAccordions() {
-  //   // console.log("quotesAndVendors: ", quotesAndVendorsByCategory)
-  //   quotesAndVendorsByCategory.map(category => {
-  //     console.log("category: ", category)
-  //     return <Accordion data={category} key={category.category} />
-  //   })
-
-  // }
 
   return (
     <View style={styles.container}>
-      <Text>cart: {cart.length}</Text>
-      {/* {console.log("user: ", user)} */}
-      {/* No properties of any kind */}
+      {/* <Text>cart: {cart.length}</Text> */}
       {user?.currentProperties.length === 0 ? (
         <View>
           <Text>You aren't currently registered at your address, but it's easy to do!</Text>
@@ -258,32 +202,40 @@ const MyQuotes = () => {
         </View>
       ) : null}
 
-      {user?.currentProperties.length !== 0 && user?.currentProperties[0].verified === false ? (
+      {moreQuotesAvailable && (
         <View>
-          <Text>You have an unverified Property</Text>
-          {}
-          {unverifiedQuotesCount !== 0 && (
-            <Text>You have available quotes on your home, verify your address to see them.</Text>
-          )}
-          
+          <Text>You have more quotes on your home, verify your address to see them.</Text>
         </View>
-      ) : (
-        null
       )}
-      {/* <View style={styles.accordion} >
-        {verifiedQuotes?.length > 0 ?
-          quotesAndVendorsByCategory.map(category => {
-            return <Accordion data={category} key={category.category} />
-          })
-          :
-          renderNoQuotes()
-        }
-      </View> */}
 
-      {/* {noAssociatedProperties ? noProperties() : null}
-      {unverifiedQuotesCount ? renderMoreQuotesNotification() : null} */}
-      {/* {unverifiedQuotesCount ? renderMoreQuotesNotification() : null} */}
-      {/* {verifiedQuotes ? renderQuotes() : null} */}
+      {selectedVendors && (
+        <View>
+            <DropDownPicker
+            open={open}
+            items={servicesList.map(service => ({ label: mapEnumToSpecialist(service), value: service }))}
+            setOpen={setOpen}
+            value={selectedService}
+            placeholder="Select a service"
+            containerStyle={{ height: 40, width: 200, alignSelf: 'center', marginBottom: 20 }}
+            style={{ backgroundColor: '#fafafa' }}
+            itemStyle={{ justifyContent: 'flex-start' }}
+            dropDownStyle={{ backgroundColor: '#fafafa' }}
+            setValue={setSelectedService}
+            
+          />
+          {selectedVendors.map(vendor => {
+            return (
+              <TouchableOpacity onPress={() => goToVendorQuotes(vendor)} style={styles.vendorTile} key={vendor._id}>
+                <VendorTile vendor={vendor} />
+              </TouchableOpacity>
+            )
+          })}
+
+
+        </View>
+      )}
+
+
     </View>
   )
 }
@@ -324,5 +276,19 @@ const styles = StyleSheet.create({
   },
   moreQuotes: {
     textAlign: 'center',
-  }
+  },
+  vendorTile: {
+    marginBottom: 5,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    padding: 10,
+  },
 })
