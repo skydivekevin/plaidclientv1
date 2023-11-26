@@ -11,7 +11,6 @@ const ClaimProperty = () => {
   const { user, setUser, token } = useContext(UserContext)
   const { propertyIdContext, propertyContext } = useContext(PropertyContext)
   const [verificationCode, setVerificationCode] = useState();
-  console.log("token in claimProeprty: ", token)
 
   function claimProperty() {
     let data;
@@ -30,7 +29,6 @@ const ClaimProperty = () => {
 
     Property(token).postJson('claimProperty', data)
       .then(response => {
-        console.log("response.data: ", response)
         setUser(response.data)
         navigation.navigate("Dashboard")
       })
