@@ -19,7 +19,7 @@ const Quote = (props) => {
   })
 
   function something() {
-    cart.map(cartItem => {
+    cart?.map(cartItem => {
       if (cartItem._id === quote._id) {
         setSelected(true)
       }

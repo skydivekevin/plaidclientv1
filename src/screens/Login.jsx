@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import UserContext from '../../context/UserContext';
 import { Auth } from '../../utils/httpUtils';
+// import Auth from '../../utils/httpUtils'
 import PropertyContext from '../../context/PropertyContext';
 
 export default function Login() {
@@ -26,32 +27,20 @@ export default function Login() {
 
   const handleLogin = () => {
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
-    const email = "Kevin.com";
-    const password = "Password";
+    // const email = "Kevin.com";
+    // const password = "Password";
     /////////////////////////////////////DELETE; FOR DEV ONLY/////////////////////////////////////
     const data = {
       email,
       password
     }
 
-    Auth.postJson('login', data)
+    Auth().postJson('login', data)
       .then(response => {
         const token = response.data.token
         const user = response.data.user
         setUser(user)
-        // if statement below is to enable removing the autocomplete component from the claim property screen; more hassle than it's worth.
-        // The claim address component is hidden from view if they already have a property associated with their account
-        // if (user.currentProperties.length === 0) {
-        //   setPropertyIdContext(user.currentProperties[0]._id)
-        // }
-
         setToken(token)
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log("error: ", error.response)
-          setErrorLoggingIn(true);
-        }
       })
       .catch(function (error) {
         if (error.response) {

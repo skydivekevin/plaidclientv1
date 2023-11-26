@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Job as JobRoute, Vendor } from '../../utils/httpUtils';
 import { useFocusEffect } from '@react-navigation/native';
+import { mapJobStatus } from '../../utils/utils';
+import UserContext from '../../context/UserContext';
+import { useContext } from 'react';
 
 const Job = ({ route, navigation }) => {
   const jobId = route.params.jobId;
   const [data, setData] = useState();
+  const { token } = useContext(UserContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -17,7 +21,7 @@ const Job = ({ route, navigation }) => {
     const data = {
       jobId
     }
-    JobRoute.getJson('getJob', data)
+    JobRoute(token).getJson('getJob', data)
       .then(response => {
         setData(response.data)
         // setLogo(response.data.vendor.logo)
@@ -42,11 +46,11 @@ const Job = ({ route, navigation }) => {
               <Text style={styles.providerInfo}>Provider Phone: {data.vendor.phoneNumber}</Text>
               <Text style={styles.providerInfo}>Provider Email: {data.vendor.email}</Text>
               <Text style={styles.providerInfo}>Total Price: ${data.job.totalPrice}</Text>
-              <Text style={styles.providerInfo}>Job Status: {data.job.jobStatus}</Text>
-              {data.job.jobStatus === "completed" && <Text style={styles.providerInfo}>Job Completed On: {data.job.dateCompleted}</Text>}
-              {data.job.jobStatus === "accepted" && <Text style={styles.providerInfo}>Job accepted, schedule now</Text>}
-              {data.job.jobStatus === "scheduled" && <Text style={styles.providerInfo}>Job scheduled for: {data.job.scheduledDate}</Text>}
-              {data.job.jobStatus === "completed" && data.job.paymentStatus === "due" && <Text style={styles.providerInfo}>Payment due, Click here to pay</Text>}
+              <Text style={styles.providerInfo}>Job Status: {mapJobStatus(data.job.jobStatus)}</Text>
+              {data.job.jobStatus === "COMPLETED" && <Text style={styles.providerInfo}>Job Completed On: {data.job.dateCompleted}</Text>}
+              {data.job.jobStatus === "ACCEPTED" && <Text style={styles.providerInfo}>Job accepted, schedule now</Text>}
+              {data.job.jobStatus === "SCHEDULED" && <Text style={styles.providerInfo}>Job scheduled for: {data.job.scheduledDate}</Text>}
+              {data.job.jobStatus === "COMPLETED" && data.job.paymentStatus === "DUE" && <Text style={styles.providerInfo}>Payment due, Click here to pay</Text>}
             </View>
           </View>
           <View style={styles.includedServicesContainer}>

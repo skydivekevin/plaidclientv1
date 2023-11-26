@@ -10,7 +10,7 @@ const CreateAccount = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phone, setPhone] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
@@ -20,11 +20,10 @@ const CreateAccount = () => {
       lastName,
       password,
       email,
-      phoneNumber,
-      role: 'HOMEOWNER'
+      phone,
     }
 
-    Auth.postJson('register', data)
+    Auth().postJson('register', data)
       .then(response => {
         const token = response.data.token
         const user = response.data.user
@@ -50,7 +49,7 @@ const CreateAccount = () => {
         <TextInput style={styles.textInput} placeholder="Last Name" onChangeText={setLastName} />
       </View>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.textInput} placeholder="Phone Number" onChangeText={setPhoneNumber} />
+        <TextInput style={styles.textInput} placeholder="Phone Number" onChangeText={setPhone} />
       </View>
       <View style={styles.inputContainer}>
         <TextInput style={styles.textInput} placeholder="Email" onChangeText={setEmail} />

@@ -5,11 +5,11 @@ import { Auth } from '../../utils/httpUtils';
 import UserContext from '../../context/UserContext';
 
 const More = () => {
-  const { user } = useContext(UserContext);
+  const { user, token } = useContext(UserContext);
   const navigation = useNavigation();
 
   function handleLogout() {
-    Auth.getJson('logout')
+    Auth(token).getJson('logout')
       .then(res => {
         navigation.navigate("Plaid")
       })

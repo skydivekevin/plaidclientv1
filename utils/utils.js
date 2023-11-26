@@ -88,4 +88,22 @@ const mapEnumToLabel = (enumValue) => {
         return enumValue;
     }
   }
-  exports.mapEnumToSpecialist = mapEnumToSpecialist
+  exports.mapEnumToSpecialist = mapEnumToSpecialist;
+
+  const mapJobStatus = (enumValue) => {
+    switch (enumValue) {
+      case 'REQUESTED':
+        return "Requested";
+      case 'ACCEPTED':
+        return "Accepted";
+      case 'SCHEDULED':
+        return "Scheduled";
+      case 'COMPLETED':
+        return "Completed";
+      case 'CANCELLED':
+        return "Cancelled";
+      default:
+        return enumValue;
+    }
+  }
+  exports.mapJobStatus = mapJobStatus

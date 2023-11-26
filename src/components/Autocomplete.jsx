@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import ApiContext from '../../context/ApiContext';
 import PropertyContext from '../../context/PropertyContext';
 import { GoogleAutocomplete, Property } from '../../utils/httpUtils';
+import UserContext from '../../context/UserContext';
 
 const url = "http://localhost:8080/api/properties"
 
@@ -14,6 +15,7 @@ export default function Autocomplete() {
 
   const { places } = useContext(ApiContext)
   const { setPropertyContext, setPropertyIdContext } = useContext(PropertyContext)
+  const { token } = useContext(UserContext)
 
   const [predictions, setPredictions] = useState([])
   const [isShowingPredictions, setIsShowingPredictions] = useState(true)
@@ -51,7 +53,7 @@ export default function Autocomplete() {
   function postAddress(location) {
     const address = buildAddress(location)
     if (address) {
-      Property.postJson('createProperty', address)
+      Property(token).postJson('createProperty', address)
         .then((response) => {
           if (response.error) {
             console.error("API Error: ", response.error)

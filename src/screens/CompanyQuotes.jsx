@@ -4,6 +4,8 @@ import Quote from '../components/Quote';
 import CartContext from '../../context/CartContext';
 import JobsContext from '../../context/JobsContext';
 import { Job } from '../../utils/httpUtils';
+import { useFocusEffect } from '@react-navigation/native';
+import UserContext from '../../context/UserContext';
 
 const CompanyQuotes = ({ route, navigation }) => {
   const vendorId = route.params.vendorId
@@ -12,9 +14,10 @@ const CompanyQuotes = ({ route, navigation }) => {
   const logo = route.params.logo
   const quotes = route.params.quotes[0].quotes
 
-  const { cart, setCart, setCartTotal } = useContext(CartContext);
+  // const { setCartTotal } = useContext(CartContext);
   const { setJobs } = useContext(JobsContext);
-
+  const { token } = useContext(UserContext);
+  const [cart, setCart] = useState([]);
   function handleSelected(quote, selected) {
     calculateCart()
     if (selected) {
@@ -34,16 +37,15 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   function checkout() {
     let data = []
-    cart.map(item => {
+    cart?.map(item => {
       data.push(item._id)
     })
     requestServices(data)
   }
 
   function requestServices(data) {
-    Job.postJson('createJob', data)
+    Job(token).postJson('createJob', data)
       .then(response => {
-        console.log("response in requestServifew: ", response.data)
         setJobs(response.data)
         navigation.navigate("My Jobs")
       })
@@ -51,10 +53,10 @@ const CompanyQuotes = ({ route, navigation }) => {
 
   function calculateCart() {
     let total = 0;
-    cart.map(item => {
+    cart?.map(item => {
       total += item.price
     })
-    setCartTotal(total)
+    // setCartTotal(total)
   }
 
   return (

@@ -1,39 +1,39 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useContext, useState } from 'react';
-import JobsContext from '../../context/JobsContext';
-import UserContext from '../../context/UserContext';
+import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useContext, useState } from "react";
+import JobsContext from "../../context/JobsContext";
+import UserContext from "../../context/UserContext";
 import JobTile from "../components/JobTile";
-import { Job } from '../../utils/httpUtils';
-import { useFocusEffect } from '@react-navigation/native';
+import { Job } from "../../utils/httpUtils";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function MyJobs() {
-  const { jobs, setJobs } = useContext(JobsContext)
-  const { user } = useContext(UserContext)
-  const [requestedJobs, setRequestedJobs] = useState([])
-  const [acceptedJobs, setAcceptedJobs] = useState([])
-  const [completedJobs, setCompletedJobs] = useState([])
+  const { jobs, setJobs } = useContext(JobsContext);
+  const { user, token } = useContext(UserContext);
+  const [requestedJobs, setRequestedJobs] = useState([]);
+  const [acceptedJobs, setAcceptedJobs] = useState([]);
+  const [completedJobs, setCompletedJobs] = useState([]);
 
   useEffect(() => {
-    getJobs()
-  }, [user])
+    getJobs();
+  }, [user]);
 
   useFocusEffect(
     React.useCallback(() => {
-      getJobs()
+      getJobs();
     }, [])
   );
 
   function getJobs() {
-    Job.getJson('homeownerJobs')
+    Job(token).getJson("homeownerJobs")
       .then((response) => {
-        setJobs(response.data)
-        aggregateJobs(response.data)
+        setJobs(response.data);
+        aggregateJobs(response.data);
       })
       .catch((err) => {
         if (err.response) {
-          console.log(err.response.data)
+          console.log(err.response.data);
         }
-      })
+      });
   }
 
   function aggregateJobs(jobsData) {
@@ -47,7 +47,12 @@ export default function MyJobs() {
   }
 
   function noJobs() {
-    return <Text>You don't currently have any jobs scheduled, view your quotes and schedule a service to book a job.</Text>
+    return (
+      <Text>
+        You don't currently have any jobs scheduled, view your quotes and
+        schedule a service to book a job.
+      </Text>
+    );
   }
 
   function renderJobs() {
@@ -55,77 +60,107 @@ export default function MyJobs() {
       <View style={styles.infoContainer}>
         <Text style={styles.subTitle}>Click on a job to see more details</Text>
 
-        {requestedJobs.length > 0 ?
+        {requestedJobs.length > 0 ? (
           <View style={styles.includedServicesContainer}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Requested Jobs</Text>
             </View>
-            {requestedJobs.map(job => {
-              return <JobTile job={job} key={job._id} />
+            {requestedJobs.map((job) => {
+              return (
+                <View style={styles.jobTile} key={job._id}>
+                  <JobTile job={job} />
+                </View>
+              );
             })}
-          </View> : null}
-        {acceptedJobs.length > 0 ?
+          </View>
+        ) : null}
+        {acceptedJobs.length > 0 ? (
           <View style={styles.includedServicesContainer}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Accepted Jobs</Text>
             </View>
-            {acceptedJobs.map(job => {
-              return <JobTile job={job} key={job._id} />
+            {acceptedJobs.map((job) => {
+              return (
+                <View style={styles.jobTile} key={job._id}>
+                  <JobTile job={job} />
+                </View>
+              );
             })}
-          </View> : null}
-        {completedJobs.length > 0 ?
+          </View>
+        ) : null}
+        {completedJobs.length > 0 ? (
           <View style={styles.includedServicesContainer}>
             <View style={styles.titleContainer}>
-              {completedJobs.length > 0 ? <Text style={styles.title}>Completed Jobs</Text> : <Text style={styles.title}>No Completed Jobs</Text>}
+              {completedJobs.length > 0 ? (
+                <Text style={styles.title}>Completed Jobs</Text>
+              ) : (
+                <Text style={styles.title}>No Completed Jobs</Text>
+              )}
             </View>
-            {completedJobs.map(job => {
-              return <JobTile job={job} key={job._id} />
+            {completedJobs.map((job) => {
+              return (
+                <View style={styles.jobTile} key={job._id}>
+                  <JobTile job={job} />
+                </View>
+              );
             })}
-          </View> : null}
+          </View>
+        ) : null}
       </View>
-    )
+    );
   }
 
   return (
     <View style={styles.container}>
-      {jobs?.length > 0 ?
-        renderJobs()
-        :
-        noJobs()
-      }
+      {jobs?.length > 0 ? renderJobs() : noJobs()}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
     marginTop: 20,
-    alignItems: 'center',
-    width: '100%'
+    alignItems: "center",
+    width: "100%",
   },
   title: {
     marginBottom: 10,
     fontSize: 30,
     borderBottomWidth: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subTitle: {
     marginBottom: 10,
     marginTop: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   includedServicesContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     borderTop: 1,
     paddingTop: 30,
-    width: '100%',
+    width: "100%",
   },
   infoContainer: {
-    width: '100%',
+    width: "100%",
   },
   titleContainer: {
     borderBottomWidth: 1,
-    width: '95%',
-  }
-})
+    width: "95%",
+    marginBottom: 20
+  },
+  jobTile: {
+    marginBottom: 5,
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    padding: 10,
+  },
+});

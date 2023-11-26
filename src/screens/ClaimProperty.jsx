@@ -8,9 +8,10 @@ import { Property } from '../../utils/httpUtils';
 
 const ClaimProperty = () => {
   const navigation = useNavigation();
-  const { user, setUser } = useContext(UserContext)
+  const { user, setUser, token } = useContext(UserContext)
   const { propertyIdContext, propertyContext } = useContext(PropertyContext)
-  const [verificationCode, setVerificationCode] = useState()
+  const [verificationCode, setVerificationCode] = useState();
+  console.log("token in claimProeprty: ", token)
 
   function claimProperty() {
     let data;
@@ -27,9 +28,9 @@ const ClaimProperty = () => {
       }
     }
 
-    Property.postJson('claimProperty', data)
+    Property(token).postJson('claimProperty', data)
       .then(response => {
-        console.log("response.data: ", response.data)
+        console.log("response.data: ", response)
         setUser(response.data)
         navigation.navigate("Dashboard")
       })
