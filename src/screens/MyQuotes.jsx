@@ -245,7 +245,8 @@ const MyQuotes = () => {
       {user &&
       user.currentProperties &&
       user.currentProperties[0] &&
-      quotesByVendor.length === 0 ? (
+      !moreQuotesAvailable &&
+      quotesByVendor?.length === 0 ? (
         <View>
           <Text style={styles.notification}>
             You don't have any quotes on your property, but they're easy to
