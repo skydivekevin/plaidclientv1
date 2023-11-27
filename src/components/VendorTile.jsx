@@ -22,16 +22,57 @@ const styles = {
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 8,
-    padding: 10
+    padding: 10,
+    marginBottom: 8,
+        shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    logo: {
-      width: 150,
-      height: 50,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
     },
-    companyName: {
-      marginLeft: 10,
-      fontSize: 20,
-      flex: 1,
-      maxHeight: 60
-    }
+  logo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 16,
+  },
+  companyName: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
 }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     backgroundColor: '#F5F5F5',
+//     borderRadius: 10,
+//     padding: 16,
+//     marginBottom: 8,
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 3.84,
+//     elevation: 5,
+//   },
+//   logo: {
+//     width: 50,
+//     height: 50,
+//     borderRadius: 25,
+//     marginRight: 16,
+//   },
+//   companyName: {
+//     flex: 1,
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },

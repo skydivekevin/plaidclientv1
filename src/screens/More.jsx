@@ -24,7 +24,7 @@ const More = () => {
     <View>
       {user?.currentProperties?.length === 0 &&
         <Button
-          title="Add property"
+          title="Register Address"
           onPress={() => {
             navigation.navigate("Claim Property")
           }}

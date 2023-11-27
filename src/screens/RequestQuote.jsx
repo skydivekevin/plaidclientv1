@@ -22,12 +22,15 @@ const RequestQuote = () => {
   const [description, setDescription] = useState();
   const { user, token } = useContext(UserContext);
   const navigation = useNavigation();
-  const [selectedService, setSelectedService] = useState("PEST_CONTROL");
+  const [selectedService, setSelectedService] = useState("");
   const [servicesList, setServicesList] = useState(services);
   const [open, setOpen] = useState(false);
   const [vendors, setVendors] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
   const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0));
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [showNoAvailable, setShowNoAvailable] = useState(false);
 
   useEffect(() => {
     if (showMessage) {
@@ -47,7 +50,15 @@ const RequestQuote = () => {
 
   useEffect(() => {
     setShowMessage(false);
+    if (selectedService && vendors.length === 0) {
+      setShowNoAvailable(true);
+    }
+    if (selectedService && vendors.length > 0) {
+      console.log("vendors: ", vendors)
+      setShowNoAvailable(false);
+    }
     if (user?.currentProperties[0]?.verified) {
+      setShowDropdown(true);
       getVendorsInRadius();
     }
   }, [selectedService]);
@@ -81,7 +92,7 @@ const RequestQuote = () => {
 
   return (
     <View style={styles.container}>
-      {!user?.currentProperties[0]?.verified ? (
+      {/* {!user?.currentProperties[0]?.verified ? (
         <View>
           <Text style={styles.noQuotes}>
             You must be verified at your address to request quotes. Don't worry,
@@ -98,6 +109,7 @@ const RequestQuote = () => {
         <View>
           <View style={styles.pickerContainer}>
             <Text style={styles.label}>Find a </Text>
+            {console.log("servicesList: ", servicesList)}
             <DropDownPicker
               open={open}
               items={servicesList.map((service) => ({
@@ -132,7 +144,48 @@ const RequestQuote = () => {
               : null}
           </View>
         </View>
+      )} */}
+      {showDropdown && (
+        <DropDownPicker
+          open={open}
+          items={servicesList.map((service) => ({
+            label: mapEnumToSpecialist(service),
+            value: service,
+          }))}
+          setOpen={setOpen}
+          value={selectedService}
+          placeholder="Find a..."
+          containerStyle={{ height: 40, width: 200 }}
+          style={{ backgroundColor: "#fafafa" }}
+          itemStyle={{ justifyContent: "flex-start" }}
+          dropDownStyle={{ backgroundColor: "#fafafa" }}
+          setValue={setSelectedService}
+        />
       )}
+      <View style={styles.button}>
+        <Text style={styles.instructions}>
+          Click on Vendor to request quotes
+        </Text>
+        {vendors?.length > 0 ? (
+          vendors.map((vendor) => {
+            return (
+              <TouchableOpacity
+                onPress={() => requestServices(vendor._id)}
+                key={vendor._id}
+              >
+                <VendorTile vendor={vendor} />
+              </TouchableOpacity>
+            );
+          })
+        ) : (
+          showNoAvailable ? (
+          <Text>
+            There is not an available {mapEnumToSpecialist(selectedService)} in
+            your area.
+          </Text>
+          ) : null
+        )}
+      </View>
 
       <Animated.View style={[styles.messageContainer, { opacity: fadeAnim }]}>
         <Text style={styles.messageText}>Quote Request Successful</Text>

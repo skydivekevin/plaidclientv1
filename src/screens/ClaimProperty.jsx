@@ -29,6 +29,7 @@ const ClaimProperty = () => {
 
     Property(token).postJson('claimProperty', data)
       .then(response => {
+        console.log("response: ", response.data)
         setUser(response.data)
         navigation.navigate("Dashboard")
       })
