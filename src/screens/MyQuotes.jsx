@@ -15,28 +15,19 @@ const MyQuotes = () => {
   const navigation = useNavigation();
   const { user, token } = useContext(UserContext);
   const {
-    quotesAndVendorsByCategory,
-    setquotesAndVendorsByCategory,
-    verifiedQuotes,
     quotesByVendor,
     setQuotesByVendor,
   } = useContext(QuotesContext);
   const { places, setPlaces } = useContext(ApiContext);
-  const { cart } = useContext(CartContext);
-  const [noAssociatedProperties, setNoAssociatedProperties] = useState();
-  const [vendors, setVendors] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [noCategories, setNoCategories] = useState();
+  // const [vendors, setVendors] = useState([]);
+  // const [categories, setCategories] = useState([]);
+  // const [noCategories, setNoCategories] = useState();
   const [moreQuotesAvailable, setMoreQuotesAvailable] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [servicesList, setServicesList] = useState(servicesMyQuotes);
   const [selectedVendors, setSelectedVendors] = useState(quotesByVendor);
-  const [address, setAddress] = useState({})
-
-  // useEffect(() => {
-  //   setUserState(user)
-  // }, [user])
+  const [address, setAddress] = useState({});
 
   useEffect(() => {
     if (!places) {
@@ -47,10 +38,6 @@ const MyQuotes = () => {
       }
     }
 
-    if (user?.currentProperties?.length === 0) {
-      setNoAssociatedProperties(true);
-      return;
-    }
     if (user?.currentProperties[0]) {
       getQuotes();
       getProperty();
@@ -68,13 +55,14 @@ const MyQuotes = () => {
   useEffect(() => {
     filterSelectedServices();
   }, [selectedService]);
-  
+
   const getProperty = () => {
-    Property(token).getJson('getProperty')
-    .then(response => {
-      setAddress(response.data.address)
-    })
-  }
+    Property(token)
+      .getJson("getProperty")
+      .then((response) => {
+        setAddress(response.data.address);
+      });
+  };
 
   const filterSelectedServices = () => {
     if (selectedService === "All") {
@@ -89,7 +77,7 @@ const MyQuotes = () => {
 
   function getQuotes() {
     if (user?.currentProperties?.length >= 1) {
-      setNoAssociatedProperties(false);
+      // setNoAssociatedProperties(false);
 
       Quote(token)
         .getJson("getAllUserQuotes")
@@ -146,66 +134,50 @@ const MyQuotes = () => {
   //   }
   // }
 
-  function collectCategories() {
-    let newCategories = [];
-    vendors.map((vendor) => {
-      if (vendor.categories.length === 0) {
-        setNoCategories(true);
-        return;
-      }
-      if (vendor.categories.length === 1) {
-        if (newCategories.includes(vendor.categories[0])) {
-          return;
-        }
-        if (!newCategories.includes(vendor.categories[0])) {
-          newCategories.push(vendor.categories[0]);
-        }
-      }
-      if (vendor.categories.length > 1) {
-        vendor.categories.map((category) => {
-          if (newCategories.includes(category)) {
-            return;
-          }
-          if (!newCategories.includes(category)) {
-            newCategories.push(category);
-          }
-        });
-      }
-    });
-    setCategories(newCategories);
-  }
+  // function collectCategories() {
+  //   let newCategories = [];
+  //   vendors.map((vendor) => {
+  //     if (vendor.categories.length === 0) {
+  //       setNoCategories(true);
+  //       return;
+  //     }
+  //     if (vendor.categories.length === 1) {
+  //       if (newCategories.includes(vendor.categories[0])) {
+  //         return;
+  //       }
+  //       if (!newCategories.includes(vendor.categories[0])) {
+  //         newCategories.push(vendor.categories[0]);
+  //       }
+  //     }
+  //     if (vendor.categories.length > 1) {
+  //       vendor.categories.map((category) => {
+  //         if (newCategories.includes(category)) {
+  //           return;
+  //         }
+  //         if (!newCategories.includes(category)) {
+  //           newCategories.push(category);
+  //         }
+  //       });
+  //     }
+  //   });
+  //   setCategories(newCategories);
+  // }
 
-  function groupVendorsByCategory() {
-    let newVendorsByCategory = [];
-    categories.map((category) => {
-      let obj = { category: category, vendors: [] };
-      vendors.map((vendor) => {
-        if (!vendor.categories.includes(category)) {
-          return;
-        }
-        if (vendor.categories.includes(category)) {
-          obj.vendors.push(vendor);
-        }
-      });
-      newVendorsByCategory.push(obj);
-    });
-    setquotesAndVendorsByCategory(newVendorsByCategory);
-  }
-
-  // function renderMoreQuotesNotification() {
-  //   return (
-  //     <View style={styles.renderMoreQuotesNotification}>
-  //       <Text style={styles.moreQuotes}>
-  //         There are more quotes available on your property. Verify property to see them and add more!
-  //       </Text>
-  //       <Button
-  //         title="Verify Property"
-  //         onPress={() => {
-  //           navigation.navigate("Claim Property")
-  //         }}
-  //       />
-  //     </View>
-  //   )
+  // function groupVendorsByCategory() {
+  //   let newVendorsByCategory = [];
+  //   categories.map((category) => {
+  //     let obj = { category: category, vendors: [] };
+  //     vendors.map((vendor) => {
+  //       if (!vendor.categories.includes(category)) {
+  //         return;
+  //       }
+  //       if (vendor.categories.includes(category)) {
+  //         obj.vendors.push(vendor);
+  //       }
+  //     });
+  //     newVendorsByCategory.push(obj);
+  //   });
+  //   setquotesAndVendorsByCategory(newVendorsByCategory);
   // }
 
   const goToVendorQuotes = (vendor) => {
@@ -214,23 +186,22 @@ const MyQuotes = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Text>cart: {cart.length}</Text> */}
       {address ? (
-        <Text style={styles.address}>{address.number} {address.street}</Text>
-
+        <Text style={styles.address}>
+          {address.number} {address.street}
+        </Text>
       ) : null}
       {user && user.currentProperties[0] ? (
-                  <Text style={styles.notification}>
-                  {user.currentProperties[0].street}
-                </Text>
-
+        <Text style={styles.notification}>
+          {user.currentProperties[0].street}
+        </Text>
       ) : null}
       {user &&
       user.currentProperties &&
       user.currentProperties?.length === 0 ? (
         <View>
           <Text style={styles.notification}>
-            You aren't currently registered at your address, but it's easy to
+            You aren't currently registered at an address, but it's easy to
             do!
           </Text>
           <Button
@@ -299,17 +270,26 @@ const MyQuotes = () => {
               setValue={setSelectedService}
             />
           )}
-          {selectedVendors?.map((vendor) => {
-            return (
-              <TouchableOpacity
-                onPress={() => goToVendorQuotes(vendor)}
-                style={styles.vendorTile}
-                key={vendor._id}
-              >
-                <VendorTile vendor={vendor} />
-              </TouchableOpacity>
-            );
-          })}
+          {selectedVendors.length === 0 && selectedService.length > 0 && (
+            <Text style={styles.notification}>
+              You don't have any existing quotes for a local{" "}
+              {mapEnumToSpecialist(selectedService)}. You can request quotes by
+              clicking "Request Quote" at the bottom of your screen.
+            </Text>
+          )}
+          <View style={styles.button}>
+            {selectedVendors?.map((vendor) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => goToVendorQuotes(vendor)}
+                  style={styles.vendorTile}
+                  key={vendor._id}
+                >
+                  <VendorTile vendor={vendor} />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
       )}
     </View>
@@ -349,20 +329,20 @@ const styles = StyleSheet.create({
   moreQuotes: {
     textAlign: "center",
   },
-  vendorTile: {
-    marginBottom: 5,
-    backgroundColor: "#ffffff",
-    borderRadius: 8,
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    padding: 10,
-  },
+  // vendorTile: {
+  //   marginBottom: 5,
+  //   backgroundColor: "#ffffff",
+  //   borderRadius: 8,
+  //   shadowColor: "#000000",
+  //   shadowOffset: {
+  //     width: 0,
+  //     height: 2,
+  //   },
+  //   shadowOpacity: 0.25,
+  //   shadowRadius: 4,
+  //   elevation: 5,
+  //   padding: 10,
+  // },
   notification: {
     textAlign: "center",
     fontSize: 18,
@@ -370,6 +350,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   address: {
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
 });

@@ -54,7 +54,7 @@ const RequestQuote = () => {
       setShowNoAvailable(true);
     }
     if (selectedService && vendors.length > 0) {
-      console.log("vendors: ", vendors)
+      console.log("vendors: ", vendors);
       setShowNoAvailable(false);
     }
     if (user?.currentProperties[0]?.verified) {
@@ -81,9 +81,9 @@ const RequestQuote = () => {
 
   const servicesRequested = () => {
     setShowMessage(true);
-    // setTimeout(() => {
-    //   setShowMessage(false);
-    // }, 5000);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000);
   };
 
   const sendRequest = () => {
@@ -162,10 +162,10 @@ const RequestQuote = () => {
           setValue={setSelectedService}
         />
       )}
+      {vendors?.length > 0 && 
+      <Text style={styles.instructions}>Click on Vendor to request quotes</Text>
+      }
       <View style={styles.button}>
-        <Text style={styles.instructions}>
-          Click on Vendor to request quotes
-        </Text>
         {vendors?.length > 0 ? (
           vendors.map((vendor) => {
             return (
@@ -177,20 +177,18 @@ const RequestQuote = () => {
               </TouchableOpacity>
             );
           })
-        ) : (
-          showNoAvailable ? (
+        ) : showNoAvailable ? (
           <Text>
             There is not an available {mapEnumToSpecialist(selectedService)} in
             your area.
           </Text>
-          ) : null
-        )}
+        ) : null}
       </View>
 
       <Animated.View style={[styles.messageContainer, { opacity: fadeAnim }]}>
         <Text style={styles.messageText}>Quote Request Successful</Text>
       </Animated.View>
-      <View>
+      <View style={styles.emailVendor}>
         <View style={styles.emailRequest}>
           <Text style={styles.invite}>
             Want a quote from your favorite provider? Invite them to Plaid
@@ -217,6 +215,7 @@ export default RequestQuote;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingHorizontal: 16,
     flexDirection: "column",
     justifyContent: "center",
@@ -236,10 +235,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 18,
     textAlign: "center",
-  },
-  button: {
-    paddingTop: 20,
-    zIndex: -1,
   },
   messageContainer: {
     marginTop: 10,
@@ -268,7 +263,6 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingTop: 20,
-    // zIndex: -1
   },
   verificationCode: {
     marginTop: 25,
@@ -282,9 +276,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     paddingLeft: 15,
   },
-  emailRequest: {
-    marginTop: 100,
-  },
   invite: {
     textAlign: "center",
     fontSize: 18,
@@ -292,5 +283,16 @@ const styles = StyleSheet.create({
   instructions: {
     textAlign: "center",
     margin: 15,
+    paddingTop: 15
+  },
+  emailRequest: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 15
+  },
+  emailVendor: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 10
   },
 });
