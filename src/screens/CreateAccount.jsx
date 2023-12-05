@@ -188,17 +188,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 50,
   },
+  selectedInputContainer: {
+    borderColor:'rgba(255, 82, 82, 0.5)', // Red border color when selected
+    borderWidth: 2,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 235, 238, 0.3)', // Light red background when selected
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3, // Android elevation for shadow
+  },
+  errorMessage: {
+    color: "rgba(255, 0, 0, 0.8)",
+    fontSize: 18,
+  },
   errorMessageContainer: {
     flexDirection: "column",
     alignItems: "center",
     marginTop: 10,
-  },
-  selectedInputContainer: {
-    borderColor: "rgba(255, 0, 0, 0.4)",
-    borderWidth: 2,
-  },
-  errorMessage: {
-    color: "rgba(255, 0, 0, 0.8)",
-    fontSize: 12,
   },
 });

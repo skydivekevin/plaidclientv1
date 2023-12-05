@@ -14,6 +14,7 @@ import { servicesMyQuotes } from "../../utils/enums";
 const MyQuotes = () => {
   const navigation = useNavigation();
   const { user, token } = useContext(UserContext);
+  console.log("user in myquotes: ", user)
   const {
     quotesByVendor,
     setQuotesByVendor,
